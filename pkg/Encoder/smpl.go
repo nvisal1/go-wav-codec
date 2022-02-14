@@ -28,7 +28,21 @@ type SmplChunk struct {
 func (s SmplChunk) WriteTo(w io.Writer) (int, error) {
 	bytesWritten := 0
 
-	b := bytesFromString(s.Manufacturer)
+	b := bytesFromString(SMPL_CHUNK_ID)
+	err := binary.Write(w, binary.BigEndian, &b)
+	if err != nil {
+		return bytesWritten, err
+	}
+	bytesWritten += len(b)
+
+	b = Align(bytesFromUINT32(uint32(36 + (len(s.Loops) * 24))))
+	err = binary.Write(w, binary.LittleEndian, &b)
+	if err != nil {
+		return bytesWritten, err
+	}
+	bytesWritten += len(b)
+
+	b = bytesFromString(s.Manufacturer)
 	if err := binary.Write(w, binary.BigEndian, b); err != nil {
 		return bytesWritten, err
 	}

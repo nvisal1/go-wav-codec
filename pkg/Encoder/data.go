@@ -6,13 +6,13 @@ import (
 	"io"
 )
 
-func WriteDataChunkBuffer(w io.Writer, p []int, numChannels int, bitsPerSample int) (int, int, error) {
+func WriteDataChunkBuffer(w io.Writer, p []int, numChannels uint16, bitsPerSample uint16) (int, int, error) {
 	bytesWritten := 0
 	framesWritten := 0
 	frameCount := calculateFrameCount(p, numChannels)
 	for i := 0; i < frameCount; i++ {
-		for j := 0; j < numChannels; j++ {
-			v := p[i*numChannels+j]
+		for j := 0; j < int(numChannels); j++ {
+			v := p[i*int(numChannels)+j]
 			switch bitsPerSample {
 			case 8:
 				if err := binary.Write(w, binary.LittleEndian, uint8(v)); err != nil {
@@ -41,16 +41,18 @@ func WriteDataChunkBuffer(w io.Writer, p []int, numChannels int, bitsPerSample i
 func WriteDataChunkID(w io.Writer) (int, error) {
 	bytesWritten := 0
 	b := bytesFromString(DATA_CHUNK_ID)
-	err := binary.Write(w, binary.BigEndian, b)
+	err := binary.Write(w, binary.BigEndian, &b)
 	if err != nil {
 		return bytesWritten, err
 	}
 	bytesWritten = len(b)
 
 	b = bytesFromUINT32(uint32(0))
-	err = binary.Write(w, binary.LittleEndian, b)
+	err = binary.Write(w, binary.LittleEndian, &b)
 	if err != nil {
 		return bytesWritten, err
 	}
+	bytesWritten = len(b)
+
 	return bytesWritten, nil
 }

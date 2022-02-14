@@ -17,6 +17,7 @@ type WavChunks struct {
 	PlstSegments []*PlstSegment
 	Sample       *SmplChunk
 	DataPosition int64
+	DataLength   uint32
 }
 
 func ReadWavChunks(r *bytes.Reader) (*WavChunks, error) {
@@ -211,6 +212,7 @@ func handleDATAChunk(r *bytes.Reader, c *Chunk, wc *WavChunks) error {
 		return err
 	}
 	wc.DataPosition = p
+	wc.DataLength = c.Size
 	_, err = r.Seek(int64(c.Size), 1)
 	if err != nil {
 		return err

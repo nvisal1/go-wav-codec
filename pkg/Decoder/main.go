@@ -26,7 +26,7 @@ const (
 
 type Decoder struct {
 	r  io.ReadSeeker
-	wc *WavChunks
+	WC *WavChunks
 }
 
 func NewDecoder(r io.ReadSeeker) *Decoder {
@@ -76,25 +76,30 @@ func (d *Decoder) ReadMetadata() error {
 		return err
 	}
 
-	d.wc = wc
+	d.WC = wc
 
 	return nil
 }
 
-func (d *Decoder) ReadAudioData(s int) ([]int, error) {
+func (d *Decoder) ReadAudioData(s int, whence int) ([]int, error) {
 	if d == nil {
 		return nil, errors.New("The Decoder is not set")
 	}
 
-	err := d.toDataStart()
-	if err != nil {
-		return nil, err
+	if whence == 0 {
+		err := d.toDataStart()
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	// This should be called after `toDataStart` because
 	// it assumes that the FMT chunk is set on the `Decoder`
-	b, err := ReadDataChunk(s, d.wc.FMT.BitsPerSample, d.r)
+	b, err := ReadDataChunk(s, d.WC.FMT.BitsPerSample, d.r)
 	if err != nil {
+		if err == io.EOF {
+			return b, err
+		}
 		return nil, err
 	}
 
@@ -102,8 +107,8 @@ func (d *Decoder) ReadAudioData(s int) ([]int, error) {
 }
 
 func (d *Decoder) toDataStart() error {
-	if d.wc.DataPosition != 0 {
-		_, err := d.r.Seek(d.wc.DataPosition, 0)
+	if d.WC.DataPosition != 0 {
+		_, err := d.r.Seek(d.WC.DataPosition+12, 0)
 		if err != nil {
 			return err
 		}
@@ -119,7 +124,7 @@ func (d *Decoder) toDataStart() error {
 		return err
 	}
 
-	_, err = d.r.Seek(d.wc.DataPosition, 0)
+	_, err = d.r.Seek(d.WC.DataPosition+12, 0)
 	if err != nil {
 		return err
 	}

@@ -14,10 +14,10 @@ func calculateBlockAlign(numChannels uint16, bitsPerSample uint16) uint16 {
 	return numChannels * (bitsPerSample / 8)
 }
 
-func calculateDataChunkSize(numChannels int, bitsPerSample int, framesWritten int) int {
-	return (int(bitsPerSample) / 8) * numChannels * framesWritten
+func calculateDataChunkSize(numChannels uint16, bitsPerSample uint16, framesWritten int) int {
+	return (int(bitsPerSample) / 8) * int(numChannels) * framesWritten
 }
 
-func calculateFrameCount(p []int, numChannels int) int {
-	return len(p) / numChannels // length of data / number of channels
+func calculateFrameCount(p []int, numChannels uint16) int {
+	return len(p) / int(numChannels) // length of data / number of channels
 }
