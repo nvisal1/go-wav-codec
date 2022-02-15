@@ -31,12 +31,10 @@ func TestEncoder_WriteAudioData_Close(t *testing.T) {
 	}
 
 	a := make([]int, 0)
-	c := 0
 	ad, err := d.ReadAudioData(100, 0)
 	if err != nil {
 		t.Error(err.Error())
 	}
-	c += 1
 	a = append(a, ad...)
 
 	for {
@@ -61,4 +59,108 @@ func TestEncoder_WriteAudioData_Close(t *testing.T) {
 		t.Error(err.Error())
 	}
 
+}
+
+func TestEncoder_WriteMetadata_WriteAudioData(t *testing.T) {
+	f, err := os.Create("./TestEncoder_WriteAudioData_Close-2.wav")
+
+	e, err := NewEncoder(1, 2, 48000, 16, f)
+	if err != nil {
+		t.Error(err.Error())
+	}
+
+	//ps := &PlstSegment{
+	//	CuePointID:      "AAAA",
+	//	Length:          0,
+	//	NumberOfRepeats: 0,
+	//}
+
+	//psl := make([]*PlstSegment, 0)
+	//psl = append(psl, ps)
+	//
+	//pc := PLSTChunk{plsts: psl}
+	//
+	//err = e.WriteMetadata(pc)
+
+	//cp := CuePoint{
+	//	ID:           "AAAA",
+	//	Position:     0,
+	//	DataChunkID:  "data",
+	//	ChunkStart:   0,
+	//	BlockStart:   0,
+	//	SampleOffset: 0,
+	//}
+
+	f2, err := os.Open("../../assets/recording-2.wav")
+	if err != nil {
+		t.Error(err.Error())
+	}
+
+	defer f.Close()
+	defer f2.Close()
+
+	d := Decoder.NewDecoder(f2)
+	err = d.ReadMetadata()
+	if err != nil {
+		t.Error(err.Error())
+	}
+
+	a := make([]int, 0)
+	c := 0
+	ad, err := d.ReadAudioData(100, 0)
+	if err != nil {
+		t.Error(err.Error())
+	}
+	c += 1
+	a = append(a, ad...)
+
+	for {
+		ad, err = d.ReadAudioData(100, 1)
+		if err != nil {
+			if err == io.EOF {
+				//a = append(a, ad...)
+				break
+			}
+			t.Error(err.Error())
+		}
+		a = append(a, ad...)
+	}
+
+	err = e.WriteAudioData(a, 0)
+	if err != nil {
+		t.Error(err.Error())
+	}
+
+	ic := &InfoChunk{
+		Location:     "",
+		Artist:       "Shinedow",
+		Software:     "",
+		CreationDate: "",
+		Copyright:    "",
+		Title:        "",
+		Engineer:     "",
+		Genre:        "",
+		Product:      "",
+		Source:       "",
+		Subject:      "",
+		Comments:     "",
+		Technician:   "",
+		Keywords:     "",
+		Medium:       "",
+	}
+
+	lic := ListChunk{
+		info: ic,
+		//adtl: nil,
+	}
+
+	err = e.WriteMetadata(lic)
+	if err != nil {
+		t.Error(err.Error())
+	}
+
+	err = e.Close()
+	if err != nil {
+		t.Error(err.Error())
+	}
 }

@@ -81,9 +81,14 @@ func (e *Encoder) writeHeadersAndFMT() error {
 }
 
 func (e *Encoder) WriteMetadata(c Chunk) error {
-	_, err := c.WriteTo(e.F)
+	n, err := c.WriteTo(e.F)
 	if err != nil {
 		return err
+	}
+	e.bytesWritten += n
+	switch e.F.(type) {
+	case *os.File:
+		return e.F.(*os.File).Sync()
 	}
 	return nil
 }
@@ -139,7 +144,7 @@ func (e *Encoder) Close() error {
 	if _, err := e.F.Seek(4, 0); err != nil {
 		return err
 	}
-	if _, err := e.F.Write(bytesFromUINT32(uint32(e.bytesWritten - 8))); err != nil {
+	if _, err := e.F.Write(bytesFromUINT32(uint32(e.bytesWritten - 8 + 4))); err != nil {
 		return fmt.Errorf("%v when writing the total written bytes", err)
 	}
 

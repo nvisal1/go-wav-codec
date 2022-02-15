@@ -74,17 +74,20 @@ func (i InfoChunk) WriteTo(w io.Writer) (int, error) {
 	}
 
 	if i.Artist != "" {
-		b := Align(bytesFromString(i.Artist))
+		l := len(bytesFromString(i.Artist))
+		ba := Align(bytesFromString(i.Artist))
 		if err := binary.Write(w, binary.BigEndian, Align(bytesFromString(IART))); err != nil {
 			return bytesWritten, err
 		}
-		if err := binary.Write(w, binary.LittleEndian, bytesFromUINT32(uint32(len(b)))); err != nil {
+		bytesWritten += len(bytesFromString(IART))
+		if err := binary.Write(w, binary.LittleEndian, uint32(len(ba))); err != nil {
 			return bytesWritten, err
 		}
-		if err := binary.Write(w, binary.BigEndian, &b); err != nil {
+		bytesWritten += len(ba)
+		if err := binary.Write(w, binary.BigEndian, &ba); err != nil {
 			return bytesWritten, err
 		}
-		bytesWritten += len(b)
+		bytesWritten += l
 	}
 
 	if i.Software != "" {
