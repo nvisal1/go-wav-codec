@@ -41,7 +41,6 @@ func TestEncoder_WriteAudioData_Close(t *testing.T) {
 		ad, err = d.ReadAudioData(100, 1)
 		if err != nil {
 			if err == io.EOF {
-				a = append(a, ad...)
 				break
 			}
 			t.Error(err.Error())
@@ -61,35 +60,13 @@ func TestEncoder_WriteAudioData_Close(t *testing.T) {
 
 }
 
-func TestEncoder_WriteMetadata_WriteAudioData(t *testing.T) {
+func TestEncoder_WriteMetadata_WriteAudioData_Close(t *testing.T) {
 	f, err := os.Create("./TestEncoder_WriteAudioData_Close-2.wav")
 
 	e, err := NewEncoder(1, 2, 48000, 16, f)
 	if err != nil {
 		t.Error(err.Error())
 	}
-
-	//ps := &PlstSegment{
-	//	CuePointID:      "AAAA",
-	//	Length:          0,
-	//	NumberOfRepeats: 0,
-	//}
-
-	//psl := make([]*PlstSegment, 0)
-	//psl = append(psl, ps)
-	//
-	//pc := PLSTChunk{plsts: psl}
-	//
-	//err = e.WriteMetadata(pc)
-
-	//cp := CuePoint{
-	//	ID:           "AAAA",
-	//	Position:     0,
-	//	DataChunkID:  "data",
-	//	ChunkStart:   0,
-	//	BlockStart:   0,
-	//	SampleOffset: 0,
-	//}
 
 	f2, err := os.Open("../../assets/recording-2.wav")
 	if err != nil {
@@ -118,7 +95,6 @@ func TestEncoder_WriteMetadata_WriteAudioData(t *testing.T) {
 		ad, err = d.ReadAudioData(100, 1)
 		if err != nil {
 			if err == io.EOF {
-				//a = append(a, ad...)
 				break
 			}
 			t.Error(err.Error())
@@ -149,9 +125,8 @@ func TestEncoder_WriteMetadata_WriteAudioData(t *testing.T) {
 		Medium:       "",
 	}
 
-	lic := ListChunk{
+	lic := &ListChunk{
 		info: ic,
-		//adtl: nil,
 	}
 
 	err = e.WriteMetadata(lic)

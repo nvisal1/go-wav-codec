@@ -34,12 +34,7 @@ func NewDecoder(r io.ReadSeeker) *Decoder {
 	return d
 }
 
-//func (d *Decoder) Seek(offset int64, whence int) (int64, error) {
-//	return d.r.Seek(offset, whence)
-//}
-//
-
-func RecordAndForward(r io.Reader, s int) (*bytes.Reader, error) {
+func recordAndForward(r io.Reader, s int) (*bytes.Reader, error) {
 	b := make([]byte, s)
 
 	if _, err := r.Read(b); err != nil {
@@ -56,7 +51,7 @@ func (d *Decoder) ReadMetadata() error {
 		return nil
 	}
 
-	wfhr, err := RecordAndForward(d.r, 12)
+	wfhr, err := recordAndForward(d.r, 12)
 	if err != nil {
 		return err
 	}
@@ -66,7 +61,7 @@ func (d *Decoder) ReadMetadata() error {
 		return err
 	}
 
-	wcr, err := RecordAndForward(d.r, int(wfh.FileSize-4))
+	wcr, err := recordAndForward(d.r, int(wfh.FileSize-4))
 	if err != nil {
 		return err
 	}

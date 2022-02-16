@@ -2,16 +2,20 @@ package Encoder
 
 import (
 	"encoding/binary"
+	"errors"
 	"io"
 )
 
 type ListChunk struct {
 	info *InfoChunk
-	//adtl *ADTLChunk
 }
 
-func (l ListChunk) WriteTo(w io.Writer) (int, error) {
+func writeLISTChunk(w io.Writer, l *ListChunk) (int, error) {
 	bytesWritten := 0
+
+	if l.info == nil {
+		return bytesWritten, errors.New("Must include an INFO chunk in the LIST chunk")
+	}
 
 	b := bytesFromString(LIST_CHUNK_ID)
 	err := binary.Write(w, binary.BigEndian, &b)
@@ -20,51 +24,29 @@ func (l ListChunk) WriteTo(w io.Writer) (int, error) {
 	}
 	bytesWritten += len(b)
 
-	//if l.info != nil && l.adtl != nil {
-	//	return bytesWritten, errors.New("Can only add one of INFO or ADTL in the LIST chunk")
-	//}
-
-	if l.info != nil {
-		s := l.getINFOChunkSize()
-		b = bytesFromUINT32(uint32(s))
-		err = binary.Write(w, binary.LittleEndian, &b)
-		if err != nil {
-			return bytesWritten, err
-		}
-		bytesWritten += len(b)
-
-		n, err := l.info.WriteTo(w)
-		bytesWritten += n
-		if err != nil {
-			return bytesWritten, err
-		}
+	s := getINFOChunkSize(l)
+	b = bytesFromUINT32(uint32(s))
+	err = binary.Write(w, binary.LittleEndian, &b)
+	if err != nil {
+		return bytesWritten, err
 	}
+	bytesWritten += len(b)
 
-	//if l.adtl != nil {
-	//	s := l.getADTLChunkSize()
-	//	b = bytesFromUINT32(uint32(s))
-	//	err = binary.Write(w, binary.LittleEndian, &b)
-	//	if err != nil {
-	//		return bytesWritten, err
-	//	}
-	//	bytesWritten += len(b)
-	//
-	//	n, err := l.adtl.WriteTo(w)
-	//	bytesWritten += n
-	//	if err != nil {
-	//		return bytesWritten, err
-	//	}
-	//}
+	n, err := l.info.WriteTo(w)
+	bytesWritten += n
+	if err != nil {
+		return bytesWritten, err
+	}
 
 	return bytesWritten, nil
 }
 
-func (l ListChunk) getINFOChunkSize() int {
+func getINFOChunkSize(l *ListChunk) int {
 	total := 0
 
 	if l.info.Location != "" {
 		b := bytesFromString(l.info.Location)
-		total += len(b) + 9
+		total += len(b) + 8
 	}
 
 	if l.info.Artist != "" {
@@ -140,24 +122,3 @@ func (l ListChunk) getINFOChunkSize() int {
 	// add 4 to account for the type ID
 	return total + 4
 }
-
-//func (l ListChunk) getADTLChunkSize() int {
-//	total := 0
-//
-//	// Get size of all Label chunks
-//	for _, lb := range l.adtl.Labels {
-//		total += lb.getChunkSize()
-//	}
-//	// Get size of all Note chunks
-//	for _, n := range l.adtl.Notes {
-//		total += n.getChunkSize()
-//	}
-//	// Get size of all LTXT chunks
-//	for _, lt := range l.adtl.LabeledTexts {
-//		total += lt.getChunkSize()
-//	}
-//
-//	// Add 4 to account for the type ID
-//	return total + 4
-//	// I love you - uwu (c) 2/5/2022
-//}

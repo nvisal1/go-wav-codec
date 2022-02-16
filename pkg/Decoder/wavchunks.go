@@ -90,7 +90,7 @@ func ReadWavChunks(r *bytes.Reader) (*WavChunks, error) {
 }
 
 func handleFMTChunk(r *bytes.Reader, c *Chunk, wc *WavChunks) error {
-	fmtr, err := RecordAndForward(r, int(c.Size))
+	fmtr, err := recordAndForward(r, int(c.Size))
 	if err != nil {
 		return err
 	}
@@ -103,7 +103,7 @@ func handleFMTChunk(r *bytes.Reader, c *Chunk, wc *WavChunks) error {
 }
 
 func handleLISTChunk(r *bytes.Reader, c *Chunk, wc *WavChunks) error {
-	listr, err := RecordAndForward(r, int(c.Size))
+	listr, err := recordAndForward(r, int(c.Size))
 	if err != nil {
 		return err
 	}
@@ -131,7 +131,7 @@ func handleLISTChunk(r *bytes.Reader, c *Chunk, wc *WavChunks) error {
 }
 
 func handleFACTChunk(r *bytes.Reader, c *Chunk, wc *WavChunks) error {
-	factr, err := RecordAndForward(r, int(c.Size))
+	factr, err := recordAndForward(r, int(c.Size))
 	if err != nil {
 		return err
 	}
@@ -145,7 +145,7 @@ func handleFACTChunk(r *bytes.Reader, c *Chunk, wc *WavChunks) error {
 }
 
 func handlePLSTChunk(r *bytes.Reader, c *Chunk, wc *WavChunks) error {
-	plstr, err := RecordAndForward(r, int(c.Size))
+	plstr, err := recordAndForward(r, int(c.Size))
 	if err != nil {
 		return err
 	}
@@ -159,7 +159,7 @@ func handlePLSTChunk(r *bytes.Reader, c *Chunk, wc *WavChunks) error {
 }
 
 func handleSMPLChunk(r *bytes.Reader, c *Chunk, wc *WavChunks) error {
-	smplr, err := RecordAndForward(r, int(c.Size))
+	smplr, err := recordAndForward(r, int(c.Size))
 	if err != nil {
 		return err
 	}
@@ -173,7 +173,7 @@ func handleSMPLChunk(r *bytes.Reader, c *Chunk, wc *WavChunks) error {
 }
 
 func handleINSTChunk(r *bytes.Reader, c *Chunk, wc *WavChunks) error {
-	instr, err := RecordAndForward(r, int(c.Size))
+	instr, err := recordAndForward(r, int(c.Size))
 	if err != nil {
 		return err
 	}
@@ -187,7 +187,7 @@ func handleINSTChunk(r *bytes.Reader, c *Chunk, wc *WavChunks) error {
 }
 
 func handleCUEChunk(r *bytes.Reader, c *Chunk, wc *WavChunks) error {
-	cuer, err := RecordAndForward(r, int(c.Size))
+	cuer, err := recordAndForward(r, int(c.Size))
 	if err != nil {
 		return err
 	}

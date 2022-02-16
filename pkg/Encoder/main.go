@@ -80,8 +80,8 @@ func (e *Encoder) writeHeadersAndFMT() error {
 	return nil
 }
 
-func (e *Encoder) WriteMetadata(c Chunk) error {
-	n, err := c.WriteTo(e.F)
+func (e *Encoder) WriteMetadata(c *ListChunk) error {
+	n, err := writeLISTChunk(e.F, c)
 	if err != nil {
 		return err
 	}

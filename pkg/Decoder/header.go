@@ -18,7 +18,7 @@ func ReadWavFileHeader(r *bytes.Reader) (*WavFileHeader, error) {
 	}
 
 	if c.Size <= 0 {
-		return nil, errors.New("File size is less than or equal to 0. Actual file size: " + string(c.Size))
+		return nil, errors.New("File size is less than or equal to 0.")
 	}
 
 	rt := make([]byte, 4)
