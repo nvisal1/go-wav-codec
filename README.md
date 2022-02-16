@@ -1,4 +1,4 @@
-#WAV Codec
+# WAV Codec
 
 ## Table of Contents
 * Summary
