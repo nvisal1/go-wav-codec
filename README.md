@@ -169,8 +169,5 @@ for {
 
 ## Practical Examples
 
-```
-
-```
 
 
