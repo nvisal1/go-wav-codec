@@ -1,4 +1,4 @@
-package Decoder
+package decoder
 
 import (
 	"bytes"
@@ -7,28 +7,30 @@ import (
 )
 
 const (
-	RIFF_CHUNK_ID                 = "RIFF"
-	WAVE_FILE_FORMAT              = "WAVE"
-	FMT_CHUNK_ID                  = "fmt "
-	LIST_CHUNK_ID                 = "LIST"
-	ASSOCIATED_DATA_LIST_CHUNK_ID = "adtl"
-	INFO_CHUNK_ID                 = "INFO"
-	LABL_CHUNK_ID                 = "labl"
-	NOTE_CHUNK_ID                 = "note"
-	TEXT_CHUNK_ID                 = "ltxt"
-	SMPL_CHUNK_ID                 = "smpl"
-	FACT_CHUNK_ID                 = "fact"
-	PLST_CHUNK_ID                 = "plst"
-	CUE_CHUNK_ID                  = "cue "
-	INST_CHUNK_ID                 = "inst"
-	DATA_CHUNK_ID                 = "data"
+	riffChunkID               = "RIFF"
+	waveFileFormat            = "WAVE"
+	fmtChunkID                = "fmt "
+	listChunkID               = "LIST"
+	associatedDataListChunkID = "adtl"
+	infoChunkID               = "INFO"
+	lablChunkID               = "labl"
+	noteChunkID               = "note"
+	textChunkID               = "ltxt"
+	smplChunkID               = "smpl"
+	factChunkID               = "fact"
+	plstChunkID               = "plst"
+	cueChunkID                = "cue "
+	instChunkID               = "inst"
+	dataChunkID               = "data"
 )
 
+// Decoder is used for reading a wav file
 type Decoder struct {
 	r  io.ReadSeeker
-	WC *WavChunks
+	WC *wavChunks
 }
 
+// NewDecoder returns a new Decoder for the provided reader
 func NewDecoder(r io.ReadSeeker) *Decoder {
 	d := &Decoder{r: r}
 	return d
@@ -46,6 +48,8 @@ func recordAndForward(r io.Reader, s int) (*bytes.Reader, error) {
 	return nr, nil
 }
 
+// ReadMetadata reads all the file headers and skips the audio data
+// The header information will be stored in Decoder.WC
 func (d *Decoder) ReadMetadata() error {
 	if d == nil {
 		return nil
@@ -56,7 +60,7 @@ func (d *Decoder) ReadMetadata() error {
 		return err
 	}
 
-	wfh, err := ReadWavFileHeader(wfhr)
+	wfh, err := readWavFileHeader(wfhr)
 	if err != nil {
 		return err
 	}
@@ -66,7 +70,7 @@ func (d *Decoder) ReadMetadata() error {
 		return err
 	}
 
-	wc, err := ReadWavChunks(wcr)
+	wc, err := readWavChunks(wcr)
 	if err != nil {
 		return err
 	}
@@ -76,6 +80,7 @@ func (d *Decoder) ReadMetadata() error {
 	return nil
 }
 
+// ReadAudioData fills the given buffer with audio data
 func (d *Decoder) ReadAudioData(s int, whence int) ([]int, error) {
 	if d == nil {
 		return nil, errors.New("The Decoder is not set")
@@ -90,7 +95,7 @@ func (d *Decoder) ReadAudioData(s int, whence int) ([]int, error) {
 
 	// This should be called after `toDataStart` because
 	// it assumes that the FMT chunk is set on the `Decoder`
-	b, err := ReadDataChunk(s, d.WC.FMT.BitsPerSample, d.r)
+	b, err := readDataChunk(s, d.WC.FMT.BitsPerSample, d.r)
 	if err != nil {
 		if err == io.EOF {
 			return b, err
