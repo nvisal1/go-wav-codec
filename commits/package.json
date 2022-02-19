@@ -1,0 +1,16 @@
+{
+  "name": "wav-codec-commits",
+  "version": "1.0.0",
+  "description": "",
+  "main": "",
+  "scripts": {
+    "lint:commit": "commitlint -e"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@commitlint/cli": "^12.1.4",
+    "@commitlint/config-conventional": "^12.1.4",
+    "commitlint-config-gitmoji": "^2.2.5"
+  }
+}
