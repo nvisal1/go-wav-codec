@@ -1,42 +1,49 @@
-package Decoder
+package decoder
 
 import (
 	"bytes"
 	"io"
 )
 
-type ADTLChunk struct {
-	Labels       []*Label
-	Notes        []*Note
-	LabeledTexts []*LabeledText
+type adtlChunk struct {
+	Labels       []*label
+	Notes        []*note
+	LabeledTexts []*labeledText
 }
 
-func ReadADTLChunk(r *bytes.Reader) (*ADTLChunk, error) {
-	ac := &ADTLChunk{}
+func readADTLChunk(r *bytes.Reader) (*adtlChunk, error) {
+	ac := &adtlChunk{}
 	for {
-		c, err := NewChunk(r)
-		if err == io.EOF {
-			return ac, nil
-		}
+		c, err := newChunk(r)
 		if err != nil {
+			if err == io.EOF {
+				return ac, nil
+			}
 			return nil, err
 		}
 
+		// If the size in the header is not an even number,
+		// we need to read an extra byte in order to stay
+		// word aligned
+		if c.Size%2 != 0 {
+			c.Size++
+		}
+
 		switch c.ID {
-		case LABL_CHUNK_ID:
-			l, err := ReadLABLChunk(r, c.Size-4)
+		case lablChunkID:
+			l, err := readLABLChunk(r, c.Size)
 			if err != nil {
 				return nil, err
 			}
 			ac.Labels = append(ac.Labels, l)
-		case NOTE_CHUNK_ID:
-			n, err := ReadNoteChunk(r, c.Size-4)
+		case noteChunkID:
+			n, err := readNoteChunk(r, c.Size)
 			if err != nil {
 				return nil, err
 			}
 			ac.Notes = append(ac.Notes, n)
-		case TEXT_CHUNK_ID:
-			lt, err := ReadLTXTChunk(r, c.Size-4)
+		case textChunkID:
+			lt, err := readLTXTChunk(r, c.Size)
 			if err != nil {
 				return nil, err
 			}
