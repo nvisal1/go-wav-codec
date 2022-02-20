@@ -1,4 +1,4 @@
-package Decoder
+package decoder
 
 import (
 	"bytes"
@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-type CuePoint struct {
+type cuePoint struct {
 	ID           string
 	Position     uint32
 	DataChunkID  string
@@ -16,20 +16,20 @@ type CuePoint struct {
 	SampleOffset uint32
 }
 
-func ReadCueChunk(r *bytes.Reader) ([]*CuePoint, error) {
+func readCueChunk(r *bytes.Reader) ([]*cuePoint, error) {
 	var cueCount uint32
 
 	if err := binary.Read(r, binary.LittleEndian, &cueCount); err != nil {
 		return nil, errors.New("An error occurred when reading the number of cues")
 	}
 
-	cues := make([]*CuePoint, 0, cueCount)
+	cues := make([]*cuePoint, 0, cueCount)
 
 	if cueCount > 0 {
 		str := make([]byte, 4)
 
 		for i := uint32(0); i < cueCount; i++ {
-			c := &CuePoint{}
+			c := &cuePoint{}
 
 			if err := binary.Read(r, binary.BigEndian, &str); err != nil {
 				return nil, errors.New("An error occurred when reading the cue ID")

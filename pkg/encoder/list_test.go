@@ -1,10 +1,9 @@
-package Encoder
+package encoder
 
 import (
 	"bytes"
 	"encoding/binary"
 	"testing"
-	"wav-concat/pkg/Decoder"
 )
 
 func Test_writeListChunk(t *testing.T) {
@@ -25,10 +24,9 @@ func Test_writeListChunk(t *testing.T) {
 		Keywords:     "",
 		Medium:       "",
 	}
-	lc := &ListChunk{info: ic}
 
 	var b bytes.Buffer
-	_, err := writeLISTChunk(&b, lc)
+	_, err := writeLISTChunk(&b, ic)
 	if err != nil {
 		t.Error(err.Error())
 	}
@@ -37,8 +35,8 @@ func Test_writeListChunk(t *testing.T) {
 
 	b32 := make([]byte, 4)
 	_, err = r.Read(b32)
-	if string(b32[:]) != LIST_CHUNK_ID {
-		t.Errorf("first 4 bytes are not %s", LIST_CHUNK_ID)
+	if string(b32[:]) != listChunkID {
+		t.Errorf("first 4 bytes are not %s", listChunkID)
 	}
 
 	_, err = r.Read(b32)
@@ -47,17 +45,8 @@ func Test_writeListChunk(t *testing.T) {
 	}
 
 	_, err = r.Read(b32)
-	if string(b32[:]) != INFO_CHUNK_ID {
-		t.Errorf("third 4 bytes are not %s", INFO_CHUNK_ID)
-	}
-
-	dc, err := Decoder.ReadINFOChunk(r)
-	if err != nil {
-		t.Error(err.Error())
-	}
-
-	if dc.Location != "a cool place" {
-		t.Error("decoded info location is incorrect")
+	if string(b32[:]) != infoChunkID {
+		t.Errorf("third 4 bytes are not %s", infoChunkID)
 	}
 
 }

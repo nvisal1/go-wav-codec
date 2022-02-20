@@ -1,4 +1,4 @@
-package Decoder
+package decoder
 
 import (
 	"bytes"
@@ -16,7 +16,7 @@ func TestReadSmplChunk(t *testing.T) {
 
 	r := bytes.NewReader(b)
 
-	s, err := ReadSmplChunk(r)
+	s, err := readSmplChunk(r)
 	if err != nil {
 		t.Errorf("Error: %s", err.Error())
 	}

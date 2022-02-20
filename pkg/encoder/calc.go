@@ -1,4 +1,4 @@
-package Encoder
+package encoder
 
 func calculateByteRate(sampleRate uint32, numChannels uint16, bitsPerSample uint16) uint32 {
 	return sampleRate * uint32(numChannels) * (uint32(bitsPerSample) / 8)

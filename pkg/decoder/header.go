@@ -1,4 +1,4 @@
-package Decoder
+package decoder
 
 import (
 	"bytes"
@@ -6,19 +6,19 @@ import (
 	"errors"
 )
 
-type WavFileHeader struct {
+type wavFileHeader struct {
 	FileSize uint32
 }
 
-func ReadWavFileHeader(r *bytes.Reader) (*WavFileHeader, error) {
-	c, err := NewChunk(r)
+func readWavFileHeader(r *bytes.Reader) (*wavFileHeader, error) {
+	c, err := newChunk(r)
 
-	if c.ID != RIFF_CHUNK_ID {
+	if c.ID != riffChunkID {
 		return nil, errors.New("File descriptor is not RIFF")
 	}
 
 	if c.Size <= 0 {
-		return nil, errors.New("File size is less than or equal to 0.")
+		return nil, errors.New("file size is less than or equal to 0")
 	}
 
 	rt := make([]byte, 4)
@@ -26,11 +26,11 @@ func ReadWavFileHeader(r *bytes.Reader) (*WavFileHeader, error) {
 	if err != nil {
 		return nil, err
 	}
-	if string(rt[:]) != WAVE_FILE_FORMAT {
+	if string(rt[:]) != waveFileFormat {
 		return nil, errors.New("File format is not WAVE. Actual " + string(rt[:]))
 	}
 
-	wfh := &WavFileHeader{
+	wfh := &wavFileHeader{
 		FileSize: c.Size,
 	}
 

@@ -1,4 +1,4 @@
-package Encoder
+package encoder
 
 import (
 	"encoding/binary"
@@ -6,31 +6,32 @@ import (
 )
 
 const (
-	IARL = "IARL"
-	IART = "IART"
-	ICMS = "ICMS"
-	ICMT = "ICMT"
-	ICOP = "ICOP"
-	ICRD = "ICRD"
-	ICRP = "ICRP"
-	IDIM = "IDIM"
-	IDPI = "IDPI"
-	IENG = "IENG"
-	IGNR = "IGNR"
-	IKEY = "IKEY"
-	ILGT = "ILGT"
-	IMED = "IMED"
-	INAM = "INAM"
-	IPLT = "INAM"
-	IPRD = "IPRD"
-	ISBJ = "ISBJ"
-	ISFT = "ISFT"
-	ISRC = "ISRC"
-	ISRF = "ISRF"
-	ITCH = "ITCH"
-	ITRK = "ITRK"
+	iARL = "IARL"
+	iART = "IART"
+	iCMS = "ICMS"
+	iCMT = "ICMT"
+	iCOP = "ICOP"
+	iCRD = "ICRD"
+	iCRP = "ICRP"
+	iDIM = "IDIM"
+	iDPI = "IDPI"
+	iENG = "IENG"
+	iGNR = "IGNR"
+	iKEY = "IKEY"
+	iLGT = "ILGT"
+	iMED = "IMED"
+	iNAM = "INAM"
+	iPLT = "INAM"
+	iPRD = "IPRD"
+	iSBJ = "ISBJ"
+	iSFT = "ISFT"
+	iSRC = "ISRC"
+	iSRF = "ISRF"
+	iTCH = "ITCH"
+	iTRK = "ITRK"
 )
 
+// InfoChunk should be used for adding metadata to a wav file
 type InfoChunk struct {
 	Location     string
 	Artist       string
@@ -49,10 +50,10 @@ type InfoChunk struct {
 	Medium       string
 }
 
-func (i InfoChunk) WriteTo(w io.Writer) (int, error) {
+func writeInfoChunk(w io.Writer, i *InfoChunk) (int, error) {
 	bytesWritten := 0
 
-	b := bytesFromString(INFO_CHUNK_ID)
+	b := bytesFromString(infoChunkID)
 	err := binary.Write(w, binary.BigEndian, &b)
 	if err != nil {
 		return bytesWritten, err
@@ -60,8 +61,8 @@ func (i InfoChunk) WriteTo(w io.Writer) (int, error) {
 	bytesWritten += len(b)
 
 	if i.Location != "" {
-		b := Align(bytesFromString(i.Location))
-		if err := binary.Write(w, binary.BigEndian, Align(bytesFromString(IARL))); err != nil {
+		b := align(bytesFromString(i.Location))
+		if err := binary.Write(w, binary.BigEndian, align(bytesFromString(iARL))); err != nil {
 			return bytesWritten, err
 		}
 		if err := binary.Write(w, binary.LittleEndian, bytesFromUINT32(uint32(len(b)))); err != nil {
@@ -75,11 +76,11 @@ func (i InfoChunk) WriteTo(w io.Writer) (int, error) {
 
 	if i.Artist != "" {
 		l := len(bytesFromString(i.Artist))
-		ba := Align(bytesFromString(i.Artist))
-		if err := binary.Write(w, binary.BigEndian, Align(bytesFromString(IART))); err != nil {
+		ba := align(bytesFromString(i.Artist))
+		if err := binary.Write(w, binary.BigEndian, align(bytesFromString(iART))); err != nil {
 			return bytesWritten, err
 		}
-		bytesWritten += len(bytesFromString(IART))
+		bytesWritten += len(bytesFromString(iART))
 		if err := binary.Write(w, binary.LittleEndian, uint32(len(ba))); err != nil {
 			return bytesWritten, err
 		}
@@ -91,8 +92,8 @@ func (i InfoChunk) WriteTo(w io.Writer) (int, error) {
 	}
 
 	if i.Software != "" {
-		b := Align(bytesFromString(i.Software))
-		if err := binary.Write(w, binary.BigEndian, Align(bytesFromString(ISFT))); err != nil {
+		b := align(bytesFromString(i.Software))
+		if err := binary.Write(w, binary.BigEndian, align(bytesFromString(iSFT))); err != nil {
 			return bytesWritten, err
 		}
 		if err := binary.Write(w, binary.LittleEndian, bytesFromUINT32(uint32(len(b)))); err != nil {
@@ -105,8 +106,8 @@ func (i InfoChunk) WriteTo(w io.Writer) (int, error) {
 	}
 
 	if i.CreationDate != "" {
-		b := Align(bytesFromString(i.CreationDate))
-		if err := binary.Write(w, binary.BigEndian, Align(bytesFromString(ICRD))); err != nil {
+		b := align(bytesFromString(i.CreationDate))
+		if err := binary.Write(w, binary.BigEndian, align(bytesFromString(iCRD))); err != nil {
 			return bytesWritten, err
 		}
 		if err := binary.Write(w, binary.LittleEndian, bytesFromUINT32(uint32(len(b)))); err != nil {
@@ -119,8 +120,8 @@ func (i InfoChunk) WriteTo(w io.Writer) (int, error) {
 	}
 
 	if i.Copyright != "" {
-		b := Align(bytesFromString(i.Copyright))
-		if err := binary.Write(w, binary.BigEndian, Align(bytesFromString(ICOP))); err != nil {
+		b := align(bytesFromString(i.Copyright))
+		if err := binary.Write(w, binary.BigEndian, align(bytesFromString(iCOP))); err != nil {
 			return bytesWritten, err
 		}
 		if err := binary.Write(w, binary.LittleEndian, bytesFromUINT32(uint32(len(b)))); err != nil {
@@ -133,8 +134,8 @@ func (i InfoChunk) WriteTo(w io.Writer) (int, error) {
 	}
 
 	if i.Title != "" {
-		b := Align(bytesFromString(i.Title))
-		if err := binary.Write(w, binary.BigEndian, Align(bytesFromString(INAM))); err != nil {
+		b := align(bytesFromString(i.Title))
+		if err := binary.Write(w, binary.BigEndian, align(bytesFromString(iNAM))); err != nil {
 			return bytesWritten, err
 		}
 		if err := binary.Write(w, binary.LittleEndian, bytesFromUINT32(uint32(len(b)))); err != nil {
@@ -147,8 +148,8 @@ func (i InfoChunk) WriteTo(w io.Writer) (int, error) {
 	}
 
 	if i.Engineer != "" {
-		b := Align(bytesFromString(i.Engineer))
-		if err := binary.Write(w, binary.BigEndian, Align(bytesFromString(IENG))); err != nil {
+		b := align(bytesFromString(i.Engineer))
+		if err := binary.Write(w, binary.BigEndian, align(bytesFromString(iENG))); err != nil {
 			return bytesWritten, err
 		}
 		if err := binary.Write(w, binary.LittleEndian, bytesFromUINT32(uint32(len(b)))); err != nil {
@@ -161,8 +162,8 @@ func (i InfoChunk) WriteTo(w io.Writer) (int, error) {
 	}
 
 	if i.Genre != "" {
-		b := Align(bytesFromString(i.Genre))
-		if err := binary.Write(w, binary.BigEndian, Align(bytesFromString(IGNR))); err != nil {
+		b := align(bytesFromString(i.Genre))
+		if err := binary.Write(w, binary.BigEndian, align(bytesFromString(iGNR))); err != nil {
 			return bytesWritten, err
 		}
 		if err := binary.Write(w, binary.LittleEndian, bytesFromUINT32(uint32(len(b)))); err != nil {
@@ -175,8 +176,8 @@ func (i InfoChunk) WriteTo(w io.Writer) (int, error) {
 	}
 
 	if i.Product != "" {
-		b := Align(bytesFromString(i.Product))
-		if err := binary.Write(w, binary.BigEndian, Align(bytesFromString(IPRD))); err != nil {
+		b := align(bytesFromString(i.Product))
+		if err := binary.Write(w, binary.BigEndian, align(bytesFromString(iPRD))); err != nil {
 			return bytesWritten, err
 		}
 		if err := binary.Write(w, binary.LittleEndian, bytesFromUINT32(uint32(len(b)))); err != nil {
@@ -189,8 +190,8 @@ func (i InfoChunk) WriteTo(w io.Writer) (int, error) {
 	}
 
 	if i.Source != "" {
-		b := Align(bytesFromString(i.Source))
-		if err := binary.Write(w, binary.BigEndian, Align(bytesFromString(ISRC))); err != nil {
+		b := align(bytesFromString(i.Source))
+		if err := binary.Write(w, binary.BigEndian, align(bytesFromString(iSRC))); err != nil {
 			return bytesWritten, err
 		}
 		if err := binary.Write(w, binary.LittleEndian, bytesFromUINT32(uint32(len(b)))); err != nil {
@@ -203,8 +204,8 @@ func (i InfoChunk) WriteTo(w io.Writer) (int, error) {
 	}
 
 	if i.Subject != "" {
-		b := Align(bytesFromString(i.Subject))
-		if err := binary.Write(w, binary.BigEndian, Align(bytesFromString(ISBJ))); err != nil {
+		b := align(bytesFromString(i.Subject))
+		if err := binary.Write(w, binary.BigEndian, align(bytesFromString(iSBJ))); err != nil {
 			return bytesWritten, err
 		}
 		if err := binary.Write(w, binary.LittleEndian, bytesFromUINT32(uint32(len(b)))); err != nil {
@@ -217,8 +218,8 @@ func (i InfoChunk) WriteTo(w io.Writer) (int, error) {
 	}
 
 	if i.Comments != "" {
-		b := Align(bytesFromString(i.Comments))
-		if err := binary.Write(w, binary.BigEndian, Align(bytesFromString(ICMT))); err != nil {
+		b := align(bytesFromString(i.Comments))
+		if err := binary.Write(w, binary.BigEndian, align(bytesFromString(iCMT))); err != nil {
 			return bytesWritten, err
 		}
 		if err := binary.Write(w, binary.LittleEndian, bytesFromUINT32(uint32(len(b)))); err != nil {
@@ -231,8 +232,8 @@ func (i InfoChunk) WriteTo(w io.Writer) (int, error) {
 	}
 
 	if i.Technician != "" {
-		b := Align(bytesFromString(i.Technician))
-		if err := binary.Write(w, binary.BigEndian, Align(bytesFromString(ITCH))); err != nil {
+		b := align(bytesFromString(i.Technician))
+		if err := binary.Write(w, binary.BigEndian, align(bytesFromString(iTCH))); err != nil {
 			return bytesWritten, err
 		}
 		if err := binary.Write(w, binary.LittleEndian, bytesFromUINT32(uint32(len(b)))); err != nil {
@@ -245,8 +246,8 @@ func (i InfoChunk) WriteTo(w io.Writer) (int, error) {
 	}
 
 	if i.Keywords != "" {
-		b := Align(bytesFromString(i.Keywords))
-		if err := binary.Write(w, binary.BigEndian, Align(bytesFromString(IKEY))); err != nil {
+		b := align(bytesFromString(i.Keywords))
+		if err := binary.Write(w, binary.BigEndian, align(bytesFromString(iKEY))); err != nil {
 			return bytesWritten, err
 		}
 		if err := binary.Write(w, binary.LittleEndian, bytesFromUINT32(uint32(len(b)))); err != nil {
@@ -259,8 +260,8 @@ func (i InfoChunk) WriteTo(w io.Writer) (int, error) {
 	}
 
 	if i.Medium != "" {
-		b := Align(bytesFromString(i.Medium))
-		if err := binary.Write(w, binary.BigEndian, Align(bytesFromString(IMED))); err != nil {
+		b := align(bytesFromString(i.Medium))
+		if err := binary.Write(w, binary.BigEndian, align(bytesFromString(iMED))); err != nil {
 			return bytesWritten, err
 		}
 		if err := binary.Write(w, binary.LittleEndian, bytesFromUINT32(uint32(len(b)))); err != nil {

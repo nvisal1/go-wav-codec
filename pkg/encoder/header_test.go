@@ -1,4 +1,4 @@
-package Encoder
+package encoder
 
 import (
 	"bytes"
@@ -8,7 +8,7 @@ import (
 
 func TestWriteWavFileHeader(t *testing.T) {
 	var b bytes.Buffer
-	_, err := WriteWavFileHeader(&b)
+	_, err := writeWavFileHeader(&b)
 	if err != nil {
 		t.Error(err.Error())
 	}
@@ -17,8 +17,8 @@ func TestWriteWavFileHeader(t *testing.T) {
 	b32 := make([]byte, 4)
 	_, err = r.Read(b32)
 
-	if string(b32[:]) != RIFF_CHUNK_ID {
-		t.Errorf("first 4 bytes are not %s", RIFF_CHUNK_ID)
+	if string(b32[:]) != riffChunkID {
+		t.Errorf("first 4 bytes are not %s", riffChunkID)
 	}
 
 	_, err = r.Read(b32)
@@ -29,7 +29,7 @@ func TestWriteWavFileHeader(t *testing.T) {
 
 	_, err = r.Read(b32)
 
-	if string(b32[:]) != WAVE_FILE_FORMAT {
-		t.Errorf("bytes 9-12 are not %s", WAVE_FILE_FORMAT)
+	if string(b32[:]) != waveFileFormat {
+		t.Errorf("bytes 9-12 are not %s", waveFileFormat)
 	}
 }

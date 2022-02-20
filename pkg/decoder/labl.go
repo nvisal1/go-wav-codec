@@ -1,4 +1,4 @@
-package Decoder
+package decoder
 
 import (
 	"bytes"
@@ -6,13 +6,13 @@ import (
 	"io"
 )
 
-type Label struct {
+type label struct {
 	CuePointID string
 	Data       string
 }
 
-func ReadLABLChunk(r *bytes.Reader, size uint32) (*Label, error) {
-	l := &Label{}
+func readLABLChunk(r *bytes.Reader, size uint32) (*label, error) {
+	l := &label{}
 	bytesRead := 0
 
 	B32 := make([]byte, 4)
@@ -32,7 +32,7 @@ func ReadLABLChunk(r *bytes.Reader, size uint32) (*Label, error) {
 			return nil, err
 		}
 		l.Data = l.Data + removeNullCharacters(string(data[:]))
-		bytesRead += 1
+		bytesRead++
 		if uint32(bytesRead) == size {
 			break
 		}

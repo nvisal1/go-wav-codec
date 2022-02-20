@@ -1,4 +1,4 @@
-package Decoder
+package decoder
 
 import (
 	"bytes"
@@ -6,13 +6,13 @@ import (
 	"errors"
 )
 
-type PlstSegment struct {
+type plstSegment struct {
 	CuePointID      string
 	Length          uint32
 	NumberOfRepeats uint32
 }
 
-func ReadPlstChunk(r *bytes.Reader) ([]*PlstSegment, error) {
+func readPlstChunk(r *bytes.Reader) ([]*plstSegment, error) {
 	var numSegments uint32
 
 	if err := binary.Read(r, binary.LittleEndian, &numSegments); err != nil {
@@ -21,10 +21,10 @@ func ReadPlstChunk(r *bytes.Reader) ([]*PlstSegment, error) {
 
 	if numSegments > 0 {
 		str := make([]byte, 4)
-		s := make([]*PlstSegment, 0, numSegments)
+		s := make([]*plstSegment, 0, numSegments)
 
 		for i := uint32(0); i < numSegments; i++ {
-			p := &PlstSegment{}
+			p := &plstSegment{}
 
 			if err := binary.Read(r, binary.BigEndian, &str); err != nil {
 				return nil, errors.New("An error occurred when reading the PLST segment cue point ID")

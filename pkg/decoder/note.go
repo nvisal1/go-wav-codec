@@ -1,4 +1,4 @@
-package Decoder
+package decoder
 
 import (
 	"bytes"
@@ -6,13 +6,13 @@ import (
 	"io"
 )
 
-type Note struct {
+type note struct {
 	CuePointID string
 	Data       string
 }
 
-func ReadNoteChunk(r *bytes.Reader, size uint32) (*Note, error) {
-	n := &Note{}
+func readNoteChunk(r *bytes.Reader, size uint32) (*note, error) {
+	n := &note{}
 	bytesRead := 0
 	B32 := make([]byte, 4)
 
@@ -31,7 +31,7 @@ func ReadNoteChunk(r *bytes.Reader, size uint32) (*Note, error) {
 			return nil, err
 		}
 		n.Data = n.Data + removeNullCharacters(string(data[:]))
-		bytesRead += 1
+		bytesRead++
 		if uint32(bytesRead) == size {
 			break
 		}

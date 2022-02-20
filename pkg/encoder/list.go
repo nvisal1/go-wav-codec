@@ -1,30 +1,21 @@
-package Encoder
+package encoder
 
 import (
 	"encoding/binary"
-	"errors"
 	"io"
 )
 
-type ListChunk struct {
-	info *InfoChunk
-}
-
-func writeLISTChunk(w io.Writer, l *ListChunk) (int, error) {
+func writeLISTChunk(w io.Writer, i *InfoChunk) (int, error) {
 	bytesWritten := 0
 
-	if l.info == nil {
-		return bytesWritten, errors.New("Must include an INFO chunk in the LIST chunk")
-	}
-
-	b := bytesFromString(LIST_CHUNK_ID)
+	b := bytesFromString(listChunkID)
 	err := binary.Write(w, binary.BigEndian, &b)
 	if err != nil {
 		return bytesWritten, err
 	}
 	bytesWritten += len(b)
 
-	s := getINFOChunkSize(l)
+	s := getINFOChunkSize(i)
 	b = bytesFromUINT32(uint32(s))
 	err = binary.Write(w, binary.LittleEndian, &b)
 	if err != nil {
@@ -32,7 +23,7 @@ func writeLISTChunk(w io.Writer, l *ListChunk) (int, error) {
 	}
 	bytesWritten += len(b)
 
-	n, err := l.info.WriteTo(w)
+	n, err := writeInfoChunk(w, i)
 	bytesWritten += n
 	if err != nil {
 		return bytesWritten, err
@@ -41,81 +32,81 @@ func writeLISTChunk(w io.Writer, l *ListChunk) (int, error) {
 	return bytesWritten, nil
 }
 
-func getINFOChunkSize(l *ListChunk) int {
+func getINFOChunkSize(i *InfoChunk) int {
 	total := 0
 
-	if l.info.Location != "" {
-		b := bytesFromString(l.info.Location)
+	if i.Location != "" {
+		b := bytesFromString(i.Location)
 		total += len(b) + 8
 	}
 
-	if l.info.Artist != "" {
-		b := bytesFromString(l.info.Artist)
+	if i.Artist != "" {
+		b := bytesFromString(i.Artist)
 		total += len(b) + 8
 	}
 
-	if l.info.Software != "" {
-		b := bytesFromString(l.info.Software)
+	if i.Software != "" {
+		b := bytesFromString(i.Software)
 		total += len(b) + 8
 	}
 
-	if l.info.CreationDate != "" {
-		b := bytesFromString(l.info.CreationDate)
+	if i.CreationDate != "" {
+		b := bytesFromString(i.CreationDate)
 		total += len(b) + 8
 	}
 
-	if l.info.Copyright != "" {
-		b := bytesFromString(l.info.Copyright)
+	if i.Copyright != "" {
+		b := bytesFromString(i.Copyright)
 		total += len(b) + 8
 	}
 
-	if l.info.Title != "" {
-		b := bytesFromString(l.info.Title)
+	if i.Title != "" {
+		b := bytesFromString(i.Title)
 		total += len(b) + 8
 	}
 
-	if l.info.Engineer != "" {
-		b := bytesFromString(l.info.Engineer)
+	if i.Engineer != "" {
+		b := bytesFromString(i.Engineer)
 		total += len(b) + 8
 	}
 
-	if l.info.Genre != "" {
-		b := bytesFromString(l.info.Genre)
+	if i.Genre != "" {
+		b := bytesFromString(i.Genre)
 		total += len(b) + 8
 	}
 
-	if l.info.Product != "" {
-		b := bytesFromString(l.info.Product)
+	if i.Product != "" {
+		b := bytesFromString(i.Product)
 		total += len(b) + 8
 	}
 
-	if l.info.Source != "" {
-		b := bytesFromString(l.info.Source)
+	if i.Source != "" {
+		b := bytesFromString(i.Source)
 		total += len(b) + 8
 	}
 
-	if l.info.Subject != "" {
-		b := bytesFromString(l.info.Subject)
+	if i.Subject != "" {
+		b := bytesFromString(i.Subject)
 		total += len(b) + 8
 	}
 
-	if l.info.Comments != "" {
-		b := bytesFromString(l.info.Comments)
+	if i.Comments != "" {
+		b := bytesFromString(i.Comments)
 		total += len(b) + 8
 	}
 
-	if l.info.Technician != "" {
-		b := bytesFromString(l.info.Technician)
+	if i.Technician != "" {
+		b := bytesFromString(i.Technician)
 		total += len(b) + 8
 	}
 
-	if l.info.Keywords != "" {
-		b := bytesFromString(l.info.Keywords)
+	if i.Keywords != "" {
+		b := bytesFromString(i.Keywords)
 		total += len(b) + 8
 	}
 
-	if l.info.Medium != "" {
-		b := bytesFromString(l.info.Medium)
+	if i.Medium != "" {
+		b := bytesFromString(i.Medium)
 		total += len(b) + 8
 	}
 

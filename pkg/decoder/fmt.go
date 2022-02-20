@@ -1,11 +1,11 @@
-package Decoder
+package decoder
 
 import (
 	"bytes"
 	"encoding/binary"
 )
 
-type FMTChunk struct {
+type fmtChunk struct {
 	AudioFormat   uint16
 	NumChannels   uint16
 	SampleRate    uint32
@@ -14,9 +14,9 @@ type FMTChunk struct {
 	BitsPerSample uint16
 }
 
-func ReadFMTChunk(r *bytes.Reader) (*FMTChunk, error) {
+func readFMTChunk(r *bytes.Reader) (*fmtChunk, error) {
 
-	f := &FMTChunk{}
+	f := &fmtChunk{}
 
 	if err := binary.Read(r, binary.LittleEndian, &f.AudioFormat); err != nil {
 		return nil, err

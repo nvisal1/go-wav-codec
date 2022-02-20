@@ -1,4 +1,4 @@
-package Decoder
+package decoder
 
 import (
 	"bytes"
@@ -7,24 +7,24 @@ import (
 	"io"
 )
 
-type WavChunks struct {
-	CuePoints    []*CuePoint
-	Fact         *FactChunk
-	FMT          *FMTChunk
-	Info         *InfoChunk
-	ADTL         *ADTLChunk
-	Inst         *InstChunk
-	PlstSegments []*PlstSegment
-	Sample       *SmplChunk
+type wavChunks struct {
+	CuePoints    []*cuePoint
+	Fact         *factChunk
+	FMT          *fmtChunk
+	Info         *infoChunk
+	ADTL         *adtlChunk
+	Inst         *instChunk
+	PlstSegments []*plstSegment
+	Sample       *smplChunk
 	DataPosition int64
 	DataLength   uint32
 }
 
-func ReadWavChunks(r *bytes.Reader) (*WavChunks, error) {
-	wc := &WavChunks{}
+func readWavChunks(r *bytes.Reader) (*wavChunks, error) {
+	wc := &wavChunks{}
 
 	for {
-		c, err := NewChunk(r)
+		c, err := newChunk(r)
 		if err == io.EOF {
 			return wc, nil
 		}
@@ -33,48 +33,48 @@ func ReadWavChunks(r *bytes.Reader) (*WavChunks, error) {
 			return nil, err
 		}
 
-		// FIXME: Move to Chunk method and return error if the provided file is not word-aligned?
+		// FIXME: Move to chunk method and return error if the provided file is not word-aligned?
 		//if size%2 == 1 {
 		//	size++
 		//}
 
 		switch c.ID {
-		case FMT_CHUNK_ID:
+		case fmtChunkID:
 			err := handleFMTChunk(r, c, wc)
 			if err != nil {
 				return nil, err
 			}
-		case LIST_CHUNK_ID:
+		case listChunkID:
 			err := handleLISTChunk(r, c, wc)
 			if err != nil {
 				return nil, err
 			}
-		case FACT_CHUNK_ID:
+		case factChunkID:
 			err := handleFACTChunk(r, c, wc)
 			if err != nil {
 				return nil, err
 			}
-		case PLST_CHUNK_ID:
+		case plstChunkID:
 			err := handlePLSTChunk(r, c, wc)
 			if err != nil {
 				return nil, err
 			}
-		case SMPL_CHUNK_ID:
+		case smplChunkID:
 			err := handleSMPLChunk(r, c, wc)
 			if err != nil {
 				return nil, err
 			}
-		case INST_CHUNK_ID:
+		case instChunkID:
 			err := handleINSTChunk(r, c, wc)
 			if err != nil {
 				return nil, err
 			}
-		case CUE_CHUNK_ID:
+		case cueChunkID:
 			err := handleCUEChunk(r, c, wc)
 			if err != nil {
 				return nil, err
 			}
-		case DATA_CHUNK_ID:
+		case dataChunkID:
 			err := handleDATAChunk(r, c, wc)
 			if err != nil {
 				return nil, err
@@ -89,12 +89,12 @@ func ReadWavChunks(r *bytes.Reader) (*WavChunks, error) {
 	}
 }
 
-func handleFMTChunk(r *bytes.Reader, c *Chunk, wc *WavChunks) error {
+func handleFMTChunk(r *bytes.Reader, c *chunk, wc *wavChunks) error {
 	fmtr, err := recordAndForward(r, int(c.Size))
 	if err != nil {
 		return err
 	}
-	fmtc, err := ReadFMTChunk(fmtr)
+	fmtc, err := readFMTChunk(fmtr)
 	if err != nil {
 		return err
 	}
@@ -102,7 +102,7 @@ func handleFMTChunk(r *bytes.Reader, c *Chunk, wc *WavChunks) error {
 	return nil
 }
 
-func handleLISTChunk(r *bytes.Reader, c *Chunk, wc *WavChunks) error {
+func handleLISTChunk(r *bytes.Reader, c *chunk, wc *wavChunks) error {
 	listr, err := recordAndForward(r, int(c.Size))
 	if err != nil {
 		return err
@@ -113,15 +113,15 @@ func handleLISTChunk(r *bytes.Reader, c *Chunk, wc *WavChunks) error {
 	if err != nil {
 		return err
 	}
-	if string(i[:]) == INFO_CHUNK_ID {
-		ic, err := ReadINFOChunk(listr)
+	if string(i[:]) == infoChunkID {
+		ic, err := readINFOChunk(listr)
 		if err != nil {
 			return err
 		}
 		wc.Info = ic
 	}
-	if string(i[:]) == ASSOCIATED_DATA_LIST_CHUNK_ID {
-		ac, err := ReadADTLChunk(listr)
+	if string(i[:]) == associatedDataListChunkID {
+		ac, err := readADTLChunk(listr)
 		if err != nil {
 			return err
 		}
@@ -130,13 +130,13 @@ func handleLISTChunk(r *bytes.Reader, c *Chunk, wc *WavChunks) error {
 	return nil
 }
 
-func handleFACTChunk(r *bytes.Reader, c *Chunk, wc *WavChunks) error {
+func handleFACTChunk(r *bytes.Reader, c *chunk, wc *wavChunks) error {
 	factr, err := recordAndForward(r, int(c.Size))
 	if err != nil {
 		return err
 	}
 
-	fc, err := ReadFactChunk(factr)
+	fc, err := readFactChunk(factr)
 	if err != nil {
 		return err
 	}
@@ -144,13 +144,13 @@ func handleFACTChunk(r *bytes.Reader, c *Chunk, wc *WavChunks) error {
 	return nil
 }
 
-func handlePLSTChunk(r *bytes.Reader, c *Chunk, wc *WavChunks) error {
+func handlePLSTChunk(r *bytes.Reader, c *chunk, wc *wavChunks) error {
 	plstr, err := recordAndForward(r, int(c.Size))
 	if err != nil {
 		return err
 	}
 
-	ps, err := ReadPlstChunk(plstr)
+	ps, err := readPlstChunk(plstr)
 	if err != nil {
 		return err
 	}
@@ -158,13 +158,13 @@ func handlePLSTChunk(r *bytes.Reader, c *Chunk, wc *WavChunks) error {
 	return nil
 }
 
-func handleSMPLChunk(r *bytes.Reader, c *Chunk, wc *WavChunks) error {
+func handleSMPLChunk(r *bytes.Reader, c *chunk, wc *wavChunks) error {
 	smplr, err := recordAndForward(r, int(c.Size))
 	if err != nil {
 		return err
 	}
 
-	sc, err := ReadSmplChunk(smplr)
+	sc, err := readSmplChunk(smplr)
 	if err != nil {
 		return nil
 	}
@@ -172,13 +172,13 @@ func handleSMPLChunk(r *bytes.Reader, c *Chunk, wc *WavChunks) error {
 	return nil
 }
 
-func handleINSTChunk(r *bytes.Reader, c *Chunk, wc *WavChunks) error {
+func handleINSTChunk(r *bytes.Reader, c *chunk, wc *wavChunks) error {
 	instr, err := recordAndForward(r, int(c.Size))
 	if err != nil {
 		return err
 	}
 
-	ic, err := ReadInstChunk(instr)
+	ic, err := readInstChunk(instr)
 	if err != nil {
 		return err
 	}
@@ -186,13 +186,13 @@ func handleINSTChunk(r *bytes.Reader, c *Chunk, wc *WavChunks) error {
 	return nil
 }
 
-func handleCUEChunk(r *bytes.Reader, c *Chunk, wc *WavChunks) error {
+func handleCUEChunk(r *bytes.Reader, c *chunk, wc *wavChunks) error {
 	cuer, err := recordAndForward(r, int(c.Size))
 	if err != nil {
 		return err
 	}
 
-	cp, err := ReadCueChunk(cuer)
+	cp, err := readCueChunk(cuer)
 	if err != nil {
 		return err
 	}
@@ -200,7 +200,7 @@ func handleCUEChunk(r *bytes.Reader, c *Chunk, wc *WavChunks) error {
 	return nil
 }
 
-func handleDATAChunk(r *bytes.Reader, c *Chunk, wc *WavChunks) error {
+func handleDATAChunk(r *bytes.Reader, c *chunk, wc *wavChunks) error {
 	if wc.FMT == nil {
 		return errors.New("Data chunk was found before fmt chunk")
 	}

@@ -1,4 +1,4 @@
-package Encoder
+package encoder
 
 import (
 	"bytes"
@@ -13,7 +13,7 @@ func TestWriteDataChunkBuffer(t *testing.T) {
 
 	var b bytes.Buffer
 
-	_, _, err := WriteDataChunkBuffer(&b, p, numChannels, bitsPerSample)
+	_, _, err := writeDataChunkBuffer(&b, p, numChannels, bitsPerSample)
 	if err != nil {
 		t.Error(err.Error())
 	}
@@ -26,7 +26,7 @@ func TestWriteDataChunkBuffer(t *testing.T) {
 func TestWriteDataChunkID(t *testing.T) {
 	var b bytes.Buffer
 
-	_, err := WriteDataChunkID(&b)
+	_, err := writeDataChunkID(&b)
 	if err != nil {
 		t.Error(err.Error())
 	}
@@ -37,8 +37,8 @@ func TestWriteDataChunkID(t *testing.T) {
 		t.Error(err.Error())
 	}
 
-	if string(temp[:]) != DATA_CHUNK_ID {
-		t.Errorf("first 4 bytes are not %s", DATA_CHUNK_ID)
+	if string(temp[:]) != dataChunkID {
+		t.Errorf("first 4 bytes are not %s", dataChunkID)
 	}
 
 	_, err = b.Read(temp)

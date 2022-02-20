@@ -1,4 +1,4 @@
-package Decoder
+package decoder
 
 import (
 	"bytes"
@@ -11,7 +11,7 @@ func TestReadLABLChunk(t *testing.T) {
 
 	r := bytes.NewReader(b)
 
-	l, err := ReadLABLChunk(r, uint32(len(b)))
+	l, err := readLABLChunk(r, uint32(len(b)))
 	if err != nil {
 		t.Errorf("Error: %s", err.Error())
 	}

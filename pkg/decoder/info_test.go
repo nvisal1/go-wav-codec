@@ -1,4 +1,4 @@
-package Decoder
+package decoder
 
 import (
 	"bytes"
@@ -28,7 +28,7 @@ func TestReadINFOChunk(t *testing.T) {
 
 	r := bytes.NewReader(b)
 
-	i, err := ReadINFOChunk(r)
+	i, err := readINFOChunk(r)
 	if err != nil {
 		t.Errorf("Error: %s", err.Error())
 	}

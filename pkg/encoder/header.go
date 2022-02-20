@@ -1,14 +1,14 @@
-package Encoder
+package encoder
 
 import (
 	"encoding/binary"
 	"io"
 )
 
-func WriteWavFileHeader(w io.Writer) (int, error) {
+func writeWavFileHeader(w io.Writer) (int, error) {
 	bytesWritten := 0
 
-	b := bytesFromString(RIFF_CHUNK_ID)
+	b := bytesFromString(riffChunkID)
 	err := binary.Write(w, binary.BigEndian, b)
 	if err != nil {
 		return bytesWritten, err
@@ -27,7 +27,7 @@ func WriteWavFileHeader(w io.Writer) (int, error) {
 
 	bytesWritten += len(b)
 
-	b = bytesFromString(WAVE_FILE_FORMAT)
+	b = bytesFromString(waveFileFormat)
 	err = binary.Write(w, binary.BigEndian, b)
 	if err != nil {
 		return bytesWritten, err

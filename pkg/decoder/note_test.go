@@ -1,4 +1,4 @@
-package Decoder
+package decoder
 
 import (
 	"bytes"
@@ -12,7 +12,7 @@ func TestReadNoteChunk(t *testing.T) {
 
 	r := bytes.NewReader(b)
 
-	n, err := ReadNoteChunk(r, uint32(len(b)))
+	n, err := readNoteChunk(r, uint32(len(b)))
 	if err != nil {
 		t.Errorf("Error: %s", err.Error())
 	}

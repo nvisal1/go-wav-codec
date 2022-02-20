@@ -1,4 +1,4 @@
-package Decoder
+package decoder
 
 import (
 	"bytes"
@@ -17,7 +17,7 @@ func TestReadFMTChunk(t *testing.T) {
 
 	r := bytes.NewReader(b)
 
-	f, err := ReadFMTChunk(r)
+	f, err := readFMTChunk(r)
 	if err != nil {
 		t.Errorf("Error: %s", err.Error())
 	}

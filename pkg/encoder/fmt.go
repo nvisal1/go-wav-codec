@@ -1,20 +1,20 @@
-package Encoder
+package encoder
 
 import (
 	"encoding/binary"
 	"io"
 )
 
-type FMTChunk struct {
+type fmtChunk struct {
 	AudioFormat   uint16
 	NumChannels   uint16
 	SampleRate    uint32
 	BitsPerSample uint16
 }
 
-func WriteFMTChunk(w io.Writer, f *FMTChunk) (int, error) {
+func writeFMTChunk(w io.Writer, f *fmtChunk) (int, error) {
 	bytesWritten := 0
-	b := bytesFromString(FMT_CHUNK_ID)
+	b := bytesFromString(fmtChunkID)
 	err := binary.Write(w, binary.BigEndian, b)
 	if err != nil {
 		return bytesWritten, err

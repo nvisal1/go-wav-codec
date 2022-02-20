@@ -1,4 +1,4 @@
-package Decoder
+package decoder
 
 import (
 	"bytes"
@@ -9,7 +9,7 @@ func TestReadInstChunk(t *testing.T) {
 	b := []byte{0x3c, 0x00, 0x00, 0x00, 0x7f, 0x01, 0x7f, 0x00}
 	r := bytes.NewReader(b)
 
-	i, err := ReadInstChunk(r)
+	i, err := readInstChunk(r)
 	if err != nil {
 		t.Errorf("Error: %s", err.Error())
 	}

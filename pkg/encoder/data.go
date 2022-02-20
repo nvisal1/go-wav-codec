@@ -1,4 +1,4 @@
-package Encoder
+package encoder
 
 import (
 	"encoding/binary"
@@ -6,7 +6,7 @@ import (
 	"io"
 )
 
-func WriteDataChunkBuffer(w io.Writer, p []int, numChannels uint16, bitsPerSample uint16) (int, int, error) {
+func writeDataChunkBuffer(w io.Writer, p []int, numChannels uint16, bitsPerSample uint16) (int, int, error) {
 	bytesWritten := 0
 	framesWritten := 0
 	frameCount := calculateFrameCount(p, numChannels)
@@ -18,7 +18,7 @@ func WriteDataChunkBuffer(w io.Writer, p []int, numChannels uint16, bitsPerSampl
 				if err := binary.Write(w, binary.LittleEndian, uint8(v)); err != nil {
 					return bytesWritten, framesWritten, err
 				}
-				bytesWritten += 1
+				bytesWritten++
 			case 16:
 				if err := binary.Write(w, binary.LittleEndian, int16(v)); err != nil {
 					return bytesWritten, framesWritten, err
@@ -33,14 +33,14 @@ func WriteDataChunkBuffer(w io.Writer, p []int, numChannels uint16, bitsPerSampl
 				return bytesWritten, framesWritten, fmt.Errorf("can't add frames of bit size %d", bitsPerSample)
 			}
 		}
-		framesWritten += 1
+		framesWritten++
 	}
 	return bytesWritten, framesWritten, nil
 }
 
-func WriteDataChunkID(w io.Writer) (int, error) {
+func writeDataChunkID(w io.Writer) (int, error) {
 	bytesWritten := 0
-	b := bytesFromString(DATA_CHUNK_ID)
+	b := bytesFromString(dataChunkID)
 	err := binary.Write(w, binary.BigEndian, &b)
 	if err != nil {
 		return bytesWritten, err

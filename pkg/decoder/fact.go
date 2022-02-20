@@ -1,4 +1,4 @@
-package Decoder
+package decoder
 
 import (
 	"bytes"
@@ -6,12 +6,12 @@ import (
 	"errors"
 )
 
-type FactChunk struct {
+type factChunk struct {
 	NumberOfSamples uint32
 }
 
-func ReadFactChunk(r *bytes.Reader) (*FactChunk, error) {
-	f := &FactChunk{}
+func readFactChunk(r *bytes.Reader) (*factChunk, error) {
+	f := &factChunk{}
 
 	if err := binary.Read(r, binary.LittleEndian, &f.NumberOfSamples); err != nil {
 		return nil, errors.New("An error occurred when reading the fact number of samples")

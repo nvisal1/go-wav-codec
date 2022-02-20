@@ -1,11 +1,11 @@
-package Decoder
+package decoder
 
 import (
 	"bytes"
 	"encoding/binary"
 )
 
-type SampleLoop struct {
+type sampleLoop struct {
 	CuePointID string
 	Type       uint32
 	Start      uint32
@@ -14,7 +14,7 @@ type SampleLoop struct {
 	PlayCount  uint32
 }
 
-type SmplChunk struct {
+type smplChunk struct {
 	Manufacturer      string
 	Product           string
 	SamplePeriod      uint32
@@ -22,11 +22,11 @@ type SmplChunk struct {
 	MIDIPitchFraction uint32
 	SMPTEFormat       uint32
 	SMPTEOffset       uint32
-	Loops             []*SampleLoop
+	Loops             []*sampleLoop
 }
 
-func ReadSmplChunk(r *bytes.Reader) (*SmplChunk, error) {
-	s := &SmplChunk{}
+func readSmplChunk(r *bytes.Reader) (*smplChunk, error) {
+	s := &smplChunk{}
 
 	B32 := make([]byte, 4)
 	if err := binary.Read(r, binary.BigEndian, &B32); err != nil {
@@ -62,7 +62,7 @@ func ReadSmplChunk(r *bytes.Reader) (*SmplChunk, error) {
 
 	if numSmplLoops > 0 {
 		for i := uint32(0); i < numSmplLoops; i++ {
-			l := &SampleLoop{}
+			l := &sampleLoop{}
 
 			if err := binary.Read(r, binary.BigEndian, &B32); err != nil {
 				return nil, err

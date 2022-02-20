@@ -1,4 +1,4 @@
-package Decoder
+package decoder
 
 import (
 	"bytes"
@@ -6,7 +6,7 @@ import (
 	"io"
 )
 
-type LabeledText struct {
+type labeledText struct {
 	CuePointID   string
 	SampleLength uint32
 	PurposeID    string
@@ -17,9 +17,9 @@ type LabeledText struct {
 	Data         string
 }
 
-func ReadLTXTChunk(r *bytes.Reader, size uint32) (*LabeledText, error) {
+func readLTXTChunk(r *bytes.Reader, size uint32) (*labeledText, error) {
 
-	l := &LabeledText{}
+	l := &labeledText{}
 	bytesRead := 0
 	B32 := make([]byte, 4)
 	B16 := make([]byte, 2)
@@ -58,6 +58,10 @@ func ReadLTXTChunk(r *bytes.Reader, size uint32) (*LabeledText, error) {
 	bytesRead += 2
 	l.CodePage = string(B16[:])
 
+	if uint32(bytesRead) == size {
+		return l, nil
+	}
+
 	for {
 		data := make([]byte, 1)
 		if err := binary.Read(r, binary.BigEndian, &data); err != nil {
@@ -67,7 +71,7 @@ func ReadLTXTChunk(r *bytes.Reader, size uint32) (*LabeledText, error) {
 			return nil, err
 		}
 		l.Data = l.Data + string(data[:])
-		bytesRead += 1
+		bytesRead++
 		if uint32(bytesRead) == size {
 			break
 		}

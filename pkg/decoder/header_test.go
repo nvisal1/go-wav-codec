@@ -1,1 +1,1 @@
-package Decoder
+package decoder

@@ -1,4 +1,4 @@
-package Decoder
+package decoder
 
 import (
 	"bytes"
@@ -16,7 +16,7 @@ func TestReadPlstChunk(t *testing.T) {
 
 	r := bytes.NewReader(b)
 
-	s, err := ReadPlstChunk(r)
+	s, err := readPlstChunk(r)
 	if err != nil {
 		t.Errorf("Error: %s", err.Error())
 	}

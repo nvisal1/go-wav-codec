@@ -1,4 +1,4 @@
-package Decoder
+package decoder
 
 import (
 	"bytes"
@@ -8,32 +8,32 @@ import (
 )
 
 const (
-	IARL = "IARL"
-	IART = "IART"
-	ICMS = "ICMS"
-	ICMT = "ICMT"
-	ICOP = "ICOP"
-	ICRD = "ICRD"
-	ICRP = "ICRP"
-	IDIM = "IDIM"
-	IDPI = "IDPI"
-	IENG = "IENG"
-	IGNR = "IGNR"
-	IKEY = "IKEY"
-	ILGT = "ILGT"
-	IMED = "IMED"
-	INAM = "INAM"
-	IPLT = "INAM"
-	IPRD = "IPRD"
-	ISBJ = "ISBJ"
-	ISFT = "ISFT"
-	ISRC = "ISRC"
-	ISRF = "ISRF"
-	ITCH = "ITCH"
-	ITRK = "ITRK"
+	iARL = "IARL"
+	iART = "IART"
+	iCMS = "ICMS"
+	iCMT = "ICMT"
+	iCOP = "ICOP"
+	iCRD = "ICRD"
+	iCRP = "ICRP"
+	iDIM = "IDIM"
+	iDPI = "IDPI"
+	iENG = "IENG"
+	iGNR = "IGNR"
+	iKEY = "IKEY"
+	iLGT = "ILGT"
+	iMED = "IMED"
+	iNAM = "INAM"
+	iPLT = "INAM"
+	iPRD = "IPRD"
+	iSBJ = "ISBJ"
+	iSFT = "ISFT"
+	iSRC = "ISRC"
+	iSRF = "ISRF"
+	iTCH = "ITCH"
+	iTRK = "ITRK"
 )
 
-type InfoChunk struct {
+type infoChunk struct {
 	Location     string
 	Artist       string
 	Software     string
@@ -55,11 +55,11 @@ func removeNullCharacters(s string) string {
 	return strings.ReplaceAll(s, "\u0000", "")
 }
 
-func ReadINFOChunk(r *bytes.Reader) (*InfoChunk, error) {
-	i := &InfoChunk{}
+func readINFOChunk(r *bytes.Reader) (*infoChunk, error) {
+	i := &infoChunk{}
 
 	for {
-		c, err := NewChunk(r)
+		c, err := newChunk(r)
 		if err != nil {
 			if err == io.EOF {
 				return i, nil
@@ -74,37 +74,36 @@ func ReadINFOChunk(r *bytes.Reader) (*InfoChunk, error) {
 		}
 
 		switch c.ID {
-		case IARL:
+		case iARL:
 			i.Location = removeNullCharacters(string(scratch[:]))
-		case IART:
+		case iART:
 			i.Artist = removeNullCharacters(string(scratch[:]))
-		case ISFT:
+		case iSFT:
 			i.Software = removeNullCharacters(string(scratch[:]))
-		case ICRD:
+		case iCRD:
 			i.CreationDate = removeNullCharacters(string(scratch[:]))
-		case ICOP:
+		case iCOP:
 			i.Copyright = removeNullCharacters(string(scratch[:]))
-		case INAM:
+		case iNAM:
 			i.Title = removeNullCharacters(string(scratch[:]))
-		case IENG:
+		case iENG:
 			i.Engineer = removeNullCharacters(string(scratch[:]))
-		case IGNR:
+		case iGNR:
 			i.Genre = removeNullCharacters(string(scratch[:]))
-		case IPRD:
+		case iPRD:
 			i.Product = removeNullCharacters(string(scratch[:]))
-		case ISRC:
+		case iSRC:
 			i.Source = removeNullCharacters(string(scratch[:]))
-		case ISBJ:
+		case iSBJ:
 			i.Subject = removeNullCharacters(string(scratch[:]))
-		case ICMT:
+		case iCMT:
 			i.Comments = removeNullCharacters(string(scratch[:]))
-		case ITCH:
+		case iTCH:
 			i.Technician = removeNullCharacters(string(scratch[:]))
-		case IKEY:
+		case iKEY:
 			i.Keywords = removeNullCharacters(string(scratch[:]))
-		case IMED:
+		case iMED:
 			i.Medium = removeNullCharacters(string(scratch[:]))
 		}
 	}
-	return i, nil
 }

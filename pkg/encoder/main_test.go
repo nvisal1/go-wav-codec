@@ -1,10 +1,10 @@
-package Encoder
+package encoder
 
 import (
 	"io"
 	"os"
 	"testing"
-	"wav-concat/pkg/Decoder"
+	"wav-concat/pkg/decoder"
 )
 
 func TestEncoder_WriteAudioData_Close(t *testing.T) {
@@ -24,7 +24,7 @@ func TestEncoder_WriteAudioData_Close(t *testing.T) {
 	defer f.Close()
 	defer f2.Close()
 
-	d := Decoder.NewDecoder(f2)
+	d := decoder.NewDecoder(f2)
 	err = d.ReadMetadata()
 	if err != nil {
 		t.Error(err.Error())
@@ -76,7 +76,7 @@ func TestEncoder_WriteMetadata_WriteAudioData_Close(t *testing.T) {
 	defer f.Close()
 	defer f2.Close()
 
-	d := Decoder.NewDecoder(f2)
+	d := decoder.NewDecoder(f2)
 	err = d.ReadMetadata()
 	if err != nil {
 		t.Error(err.Error())
@@ -88,7 +88,7 @@ func TestEncoder_WriteMetadata_WriteAudioData_Close(t *testing.T) {
 	if err != nil {
 		t.Error(err.Error())
 	}
-	c += 1
+	c++
 	a = append(a, ad...)
 
 	for {
@@ -125,14 +125,7 @@ func TestEncoder_WriteMetadata_WriteAudioData_Close(t *testing.T) {
 		Medium:       "",
 	}
 
-	lic := &ListChunk{
-		info: ic,
-	}
-
-	err = e.WriteMetadata(lic)
-	if err != nil {
-		t.Error(err.Error())
-	}
+	e.WriteMetadata(ic)
 
 	err = e.Close()
 	if err != nil {

@@ -1,22 +1,22 @@
-package Decoder
+package decoder
 
 import (
 	"bytes"
 	"encoding/binary"
 )
 
-type Chunk struct {
+type chunk struct {
 	ID   string
 	Size uint32
 }
 
-func NewChunk(r *bytes.Reader) (*Chunk, error) {
+func newChunk(r *bytes.Reader) (*chunk, error) {
 	var (
 		id   [4]byte
 		size [4]byte
 	)
 
-	c := &Chunk{}
+	c := &chunk{}
 
 	err := binary.Read(r, binary.BigEndian, &id)
 	if err != nil {
