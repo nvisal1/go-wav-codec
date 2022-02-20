@@ -1,5 +1,7 @@
 # WAV Codec
 
+[![Go](https://github.com/nvisal1/Wav-Codec-POC/actions/workflows/go.yml/badge.svg?branch=master)](https://github.com/nvisal1/Wav-Codec-POC/actions/workflows/go.yml)
+
 ## Table of Contents
 * Summary
 * Installation
