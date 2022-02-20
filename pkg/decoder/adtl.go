@@ -23,8 +23,8 @@ func readADTLChunk(r *bytes.Reader) (*adtlChunk, error) {
 		}
 
 		// If the size in the header is not an even number,
-		// we need to read an extra byte in order to stay
-		// word aligned
+		// we need to read an extra byte in order to maintain
+		// word aligned position
 		if c.Size%2 != 0 {
 			c.Size++
 		}
