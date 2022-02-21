@@ -2,6 +2,8 @@
 
 [![Go](https://github.com/nvisal1/Wav-Codec-POC/actions/workflows/go.yml/badge.svg?branch=master)](https://github.com/nvisal1/Wav-Codec-POC/actions/workflows/go.yml)
 
+<img src="./assets/gopher.png" alt="drawing" width="500"/>
+
 ## Table of Contents
 * Summary
 * Installation
