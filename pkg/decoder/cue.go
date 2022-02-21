@@ -3,7 +3,6 @@ package decoder
 import (
 	"bytes"
 	"encoding/binary"
-	"errors"
 	"strings"
 )
 
@@ -20,7 +19,7 @@ func readCueChunk(r *bytes.Reader) ([]*cuePoint, error) {
 	var cueCount uint32
 
 	if err := binary.Read(r, binary.LittleEndian, &cueCount); err != nil {
-		return nil, errors.New("An error occurred when reading the number of cues")
+		return nil, err
 	}
 
 	cues := make([]*cuePoint, 0, cueCount)
@@ -32,31 +31,31 @@ func readCueChunk(r *bytes.Reader) ([]*cuePoint, error) {
 			c := &cuePoint{}
 
 			if err := binary.Read(r, binary.BigEndian, &str); err != nil {
-				return nil, errors.New("An error occurred when reading the cue ID")
+				return nil, err
 			}
 
 			c.ID = strings.ReplaceAll(string(str[:]), "\u0000", "")
 
 			if err := binary.Read(r, binary.LittleEndian, &c.Position); err != nil {
-				return nil, errors.New("An error occurred when reading the cue position")
+				return nil, err
 			}
 
 			if err := binary.Read(r, binary.BigEndian, &str); err != nil {
-				return nil, errors.New("An error occurred when reading the cue data chunk ID")
+				return nil, err
 			}
 
 			c.DataChunkID = string(str[:])
 
 			if err := binary.Read(r, binary.LittleEndian, &c.ChunkStart); err != nil {
-				return nil, errors.New("An error occurred when reading the cue chunk start")
+				return nil, err
 			}
 
 			if err := binary.Read(r, binary.LittleEndian, &c.BlockStart); err != nil {
-				return nil, errors.New("An error occurred when reading the cue block start")
+				return nil, err
 			}
 
 			if err := binary.Read(r, binary.LittleEndian, &c.SampleOffset); err != nil {
-				return nil, errors.New("An error occurred when reading the cue sample offset")
+				return nil, err
 			}
 
 			cues = append(cues, c)
