@@ -12,6 +12,9 @@ type wavFileHeader struct {
 
 func readWavFileHeader(r *bytes.Reader) (*wavFileHeader, error) {
 	c, err := newChunk(r)
+	if err != nil {
+		return nil, err
+	}
 
 	if c.ID != riffChunkID {
 		return nil, errors.New("File descriptor is not RIFF")
