@@ -1,6 +1,7 @@
 # WAV Codec
 
 [![Go](https://github.com/nvisal1/Wav-Codec-POC/actions/workflows/go.yml/badge.svg?branch=master)](https://github.com/nvisal1/Wav-Codec-POC/actions/workflows/go.yml)
+[![codecov](https://codecov.io/gh/nvisal1/Wav-Codec-POC/branch/master/graph/badge.svg?token=4DRC08BB3G)](https://codecov.io/gh/nvisal1/Wav-Codec-POC)
 [![made-with-Go](https://img.shields.io/badge/Made%20with-Go-1f425f.svg)](http://golang.org)
 [![GitHub go.mod Go version of a Go module](https://img.shields.io/github/go-mod/go-version/gomods/athens.svg)](https://github.com/gomods/athens)
 [![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)](https://github.com/Naereen/StrapDown.js/blob/master/LICENSE)
