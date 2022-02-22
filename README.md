@@ -3,10 +3,11 @@
 [![Go](https://github.com/nvisal1/Wav-Codec-POC/actions/workflows/go.yml/badge.svg?branch=master)](https://github.com/nvisal1/Wav-Codec-POC/actions/workflows/go.yml)
 [![codecov](https://codecov.io/gh/nvisal1/Wav-Codec-POC/branch/master/graph/badge.svg?token=4DRC08BB3G)](https://codecov.io/gh/nvisal1/Wav-Codec-POC)
 [![made-with-Go](https://img.shields.io/badge/Made%20with-Go-1f425f.svg)](http://golang.org)
-[![GitHub go.mod Go version of a Go module](https://img.shields.io/github/go-mod/go-version/gomods/athens.svg)](https://github.com/gomods/athens)
-[![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)](https://github.com/Naereen/StrapDown.js/blob/master/LICENSE)
-[![Open Source? Yes!](https://badgen.net/badge/Open%20Source%20%3F/Yes%21/blue?icon=github)](https://github.com/Naereen/badges/)
-[![saythanks](https://img.shields.io/badge/say-thanks-ff69b4.svg)](https://saythanks.io/to/kennethreitz)
+[![GitHub go.mod Go version of a Go module](https://img.shields.io/github/go-mod/go-version/gomods/athens.svg)]()
+[![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)]()
+[![Maintained?](https://img.shields.io/badge/Maintained%3F-yes-green.svg)]()
+[![Open Source? Yes!](https://badgen.net/badge/Open%20Source%20%3F/Yes%21/blue?icon=github)]()
+[![saythanks](https://img.shields.io/badge/say-thanks-ff69b4.svg)]()
 
 <img src="./assets/gopher.png" alt="drawing" width="500"/>
 
