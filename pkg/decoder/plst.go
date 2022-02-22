@@ -3,7 +3,6 @@ package decoder
 import (
 	"bytes"
 	"encoding/binary"
-	"errors"
 )
 
 type plstSegment struct {
@@ -16,7 +15,7 @@ func readPlstChunk(r *bytes.Reader) ([]*plstSegment, error) {
 	var numSegments uint32
 
 	if err := binary.Read(r, binary.LittleEndian, &numSegments); err != nil {
-		return nil, errors.New("An error occurred when reading the number of PLST segments")
+		return nil, err
 	}
 
 	if numSegments > 0 {
@@ -27,17 +26,17 @@ func readPlstChunk(r *bytes.Reader) ([]*plstSegment, error) {
 			p := &plstSegment{}
 
 			if err := binary.Read(r, binary.BigEndian, &str); err != nil {
-				return nil, errors.New("An error occurred when reading the PLST segment cue point ID")
+				return nil, err
 			}
 
 			p.CuePointID = string(str[:])
 
 			if err := binary.Read(r, binary.LittleEndian, &p.Length); err != nil {
-				return nil, errors.New("An error occurred when reading the PLST segment length")
+				return nil, err
 			}
 
 			if err := binary.Read(r, binary.LittleEndian, &p.NumberOfRepeats); err != nil {
-				return nil, errors.New("An error occurred when reading the PLST segment position")
+				return nil, err
 			}
 
 			s = append(s, p)
