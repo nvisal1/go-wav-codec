@@ -40,8 +40,6 @@ _**(as most metadata chunks are frowned upon - they are not supported by many ap
 
 `WriteMetadata`
 
-`WriteAudioDataHeader`
-
 `WriteAudioData`
 
 `Close`
@@ -49,7 +47,7 @@ _**(as most metadata chunks are frowned upon - they are not supported by many ap
 ### Examples
 
 #### Create a new Encoder
-```
+```go
 f, err := os.Create("./path/to/your/file")
 if err != nil {
     panic(err)
@@ -64,7 +62,7 @@ if err != nil {
 ```
 
 #### Write audio data to a new file
-```
+```go
 a := []int{0,0,0,0} // This is your audio data
 
 err = e.WriteAudioData(a, 0)
@@ -79,7 +77,7 @@ if err != nil {
 ```
 
 #### Write metadata to a new file
-```
+```go
 a := []int{0,0,0,0} // This is your audio data
 
 err = e.WriteAudioData(a, 0)
@@ -129,7 +127,7 @@ if err != nil {
 ### Examples
 
 #### Create a new Decoder
-```
+```go
 f, err := os.Open("./path/to/your/file")
 if err != nil {
     panic(err)
@@ -141,7 +139,7 @@ d := Decoder.NewDecoder(f)
 ```
 
 #### Read a portion of audio data
-```
+```go
 a := make([]int, 0)
 ad, err := d.ReadAudioData(100, 0)
 if err != nil {
@@ -151,7 +149,7 @@ a = append(a, ad...)
 ```
 
 #### Read all the audio data in chunks
-```
+```go
 a := make([]int, 0)
 ad, err := d.ReadAudioData(100, 0)
 if err != nil {
