@@ -2,10 +2,11 @@ package decoder
 
 import (
 	"bytes"
+	"io"
 	"testing"
 )
 
-func TestReadSmplChunk(t *testing.T) {
+func TestReadSmplChunk_Success(t *testing.T) {
 	b := []byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 		0x00, 0x93, 0x58, 0x00, 0x00, 0x2d, 0x00, 0x00, 0x00,
 		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -25,4 +26,660 @@ func TestReadSmplChunk(t *testing.T) {
 		t.Errorf("Error: did not find the correct number of loops. Found %d", len(s.Loops))
 	}
 
+}
+
+func TestReadSmplChunk_Fail_No_Manufacturer(t *testing.T) {
+	b := []byte{}
+
+	r := bytes.NewReader(b)
+
+	s, err := readSmplChunk(r)
+
+	if s != nil {
+		t.Error("returned smpl chunk is not nil")
+	}
+
+	if err == nil {
+		t.Error("returned error is nil")
+	}
+
+	if err != io.EOF {
+		t.Errorf("expected \"EOF\". received \"%s\"", err.Error())
+	}
+}
+
+func TestReadSmplChunk_Fail_Short_Manufacturer(t *testing.T) {
+	b := []byte{0x00}
+
+	r := bytes.NewReader(b)
+
+	s, err := readSmplChunk(r)
+
+	if s != nil {
+		t.Error("returned smpl chunk is not nil")
+	}
+
+	if err == nil {
+		t.Error("returned error is nil")
+	}
+
+	if err != io.ErrUnexpectedEOF {
+		t.Errorf("expected \"Unexpected EOF\". received \"%s\"", err.Error())
+	}
+}
+
+func TestReadSmplChunk_Fail_No_Product(t *testing.T) {
+	b := []byte{0x00, 0x00, 0x00, 0x00}
+
+	r := bytes.NewReader(b)
+
+	s, err := readSmplChunk(r)
+
+	if s != nil {
+		t.Error("returned smpl chunk is not nil")
+	}
+
+	if err == nil {
+		t.Error("returned error is nil")
+	}
+
+	if err != io.EOF {
+		t.Errorf("expected \"EOF\". received \"%s\"", err.Error())
+	}
+}
+
+func TestReadSmplChunk_Fail_Short_Product(t *testing.T) {
+	b := []byte{0x00, 0x00, 0x00, 0x00, 0x00}
+
+	r := bytes.NewReader(b)
+
+	s, err := readSmplChunk(r)
+
+	if s != nil {
+		t.Error("returned smpl chunk is not nil")
+	}
+
+	if err == nil {
+		t.Error("returned error is nil")
+	}
+
+	if err != io.ErrUnexpectedEOF {
+		t.Errorf("expected \"Unexpected EOF\". received \"%s\"", err.Error())
+	}
+}
+
+func TestReadSmplChunk_Fail_No_SamplePeriod(t *testing.T) {
+	b := []byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+		0x00}
+
+	r := bytes.NewReader(b)
+
+	s, err := readSmplChunk(r)
+
+	if s != nil {
+		t.Error("returned smpl chunk is not nil")
+	}
+
+	if err == nil {
+		t.Error("returned error is nil")
+	}
+
+	if err != io.EOF {
+		t.Errorf("expected \"EOF\". received \"%s\"", err.Error())
+	}
+}
+
+func TestReadSmplChunk_Fail_Short_SamplePeriod(t *testing.T) {
+	b := []byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+		0x00, 0x93}
+
+	r := bytes.NewReader(b)
+
+	s, err := readSmplChunk(r)
+
+	if s != nil {
+		t.Error("returned smpl chunk is not nil")
+	}
+
+	if err == nil {
+		t.Error("returned error is nil")
+	}
+
+	if err != io.ErrUnexpectedEOF {
+		t.Errorf("expected \"Unexpected EOF\". received \"%s\"", err.Error())
+	}
+}
+
+func TestReadSmplChunk_Fail_No_MIDIUnityNote(t *testing.T) {
+	b := []byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+		0x00, 0x93, 0x58, 0x00, 0x00}
+
+	r := bytes.NewReader(b)
+
+	s, err := readSmplChunk(r)
+
+	if s != nil {
+		t.Error("returned smpl chunk is not nil")
+	}
+
+	if err == nil {
+		t.Error("returned error is nil")
+	}
+
+	if err != io.EOF {
+		t.Errorf("expected \"EOF\". received \"%s\"", err.Error())
+	}
+}
+
+func TestReadSmplChunk_Fail_Short_MIDIUnityNote(t *testing.T) {
+	b := []byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+		0x00, 0x93, 0x58, 0x00, 0x00, 0x2d}
+
+	r := bytes.NewReader(b)
+
+	s, err := readSmplChunk(r)
+
+	if s != nil {
+		t.Error("returned smpl chunk is not nil")
+	}
+
+	if err == nil {
+		t.Error("returned error is nil")
+	}
+
+	if err != io.ErrUnexpectedEOF {
+		t.Errorf("expected \"Unexpected EOF\". received \"%s\"", err.Error())
+	}
+}
+
+func TestReadSmplChunk_Fail_No_MIDIPitchFraction(t *testing.T) {
+	b := []byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+		0x00, 0x93, 0x58, 0x00, 0x00, 0x2d, 0x00, 0x00, 0x00}
+
+	r := bytes.NewReader(b)
+
+	s, err := readSmplChunk(r)
+
+	if s != nil {
+		t.Error("returned smpl chunk is not nil")
+	}
+
+	if err == nil {
+		t.Error("returned error is nil")
+	}
+
+	if err != io.EOF {
+		t.Errorf("expected \"EOF\". received \"%s\"", err.Error())
+	}
+}
+
+func TestReadSmplChunk_Fail_Short_MIDIPitchFraction(t *testing.T) {
+	b := []byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+		0x00, 0x93, 0x58, 0x00, 0x00, 0x2d, 0x00, 0x00, 0x00, 0x00}
+
+	r := bytes.NewReader(b)
+
+	s, err := readSmplChunk(r)
+
+	if s != nil {
+		t.Error("returned smpl chunk is not nil")
+	}
+
+	if err == nil {
+		t.Error("returned error is nil")
+	}
+
+	if err != io.ErrUnexpectedEOF {
+		t.Errorf("expected \"Unexpected EOF\". received \"%s\"", err.Error())
+	}
+}
+
+func TestReadSmplChunk_Fail_No_SMPTEFormat(t *testing.T) {
+	b := []byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+		0x00, 0x93, 0x58, 0x00, 0x00, 0x2d, 0x00, 0x00, 0x00,
+		0x00, 0x00, 0x00, 0x00}
+
+	r := bytes.NewReader(b)
+
+	s, err := readSmplChunk(r)
+
+	if s != nil {
+		t.Error("returned smpl chunk is not nil")
+	}
+
+	if err == nil {
+		t.Error("returned error is nil")
+	}
+
+	if err != io.EOF {
+		t.Errorf("expected \"EOF\". received \"%s\"", err.Error())
+	}
+}
+
+func TestReadSmplChunk_Fail_Short_SMPTEFormat(t *testing.T) {
+	b := []byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+		0x00, 0x93, 0x58, 0x00, 0x00, 0x2d, 0x00, 0x00, 0x00,
+		0x00, 0x00, 0x00, 0x00, 0x00}
+
+	r := bytes.NewReader(b)
+
+	s, err := readSmplChunk(r)
+
+	if s != nil {
+		t.Error("returned smpl chunk is not nil")
+	}
+
+	if err == nil {
+		t.Error("returned error is nil")
+	}
+
+	if err != io.ErrUnexpectedEOF {
+		t.Errorf("expected \"Unexpected EOF\". received \"%s\"", err.Error())
+	}
+}
+
+func TestReadSmplChunk_Fail_No_SMPTEOffset(t *testing.T) {
+	b := []byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+		0x00, 0x93, 0x58, 0x00, 0x00, 0x2d, 0x00, 0x00, 0x00,
+		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}
+
+	r := bytes.NewReader(b)
+
+	s, err := readSmplChunk(r)
+
+	if s != nil {
+		t.Error("returned smpl chunk is not nil")
+	}
+
+	if err == nil {
+		t.Error("returned error is nil")
+	}
+
+	if err != io.EOF {
+		t.Errorf("expected \"EOF\". received \"%s\"", err.Error())
+	}
+}
+
+func TestReadSmplChunk_Fail_Short_SMPTEOffset(t *testing.T) {
+	b := []byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+		0x00, 0x93, 0x58, 0x00, 0x00, 0x2d, 0x00, 0x00, 0x00,
+		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}
+
+	r := bytes.NewReader(b)
+
+	s, err := readSmplChunk(r)
+
+	if s != nil {
+		t.Error("returned smpl chunk is not nil")
+	}
+
+	if err == nil {
+		t.Error("returned error is nil")
+	}
+
+	if err != io.ErrUnexpectedEOF {
+		t.Errorf("expected \"Unexpected EOF\". received \"%s\"", err.Error())
+	}
+}
+
+func TestReadSmplChunk_Fail_No_NumSmplLoops(t *testing.T) {
+	b := []byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+		0x00, 0x93, 0x58, 0x00, 0x00, 0x2d, 0x00, 0x00, 0x00,
+		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+		0x00, 0x00, 0x00}
+
+	r := bytes.NewReader(b)
+
+	s, err := readSmplChunk(r)
+
+	if s != nil {
+		t.Error("returned smpl chunk is not nil")
+	}
+
+	if err == nil {
+		t.Error("returned error is nil")
+	}
+
+	if err != io.EOF {
+		t.Errorf("expected \"EOF\". received \"%s\"", err.Error())
+	}
+}
+
+func TestReadSmplChunk_Fail_Short_NumSmplLoops(t *testing.T) {
+	b := []byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+		0x00, 0x93, 0x58, 0x00, 0x00, 0x2d, 0x00, 0x00, 0x00,
+		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+		0x00, 0x00, 0x00, 0x01}
+
+	r := bytes.NewReader(b)
+
+	s, err := readSmplChunk(r)
+
+	if s != nil {
+		t.Error("returned smpl chunk is not nil")
+	}
+
+	if err == nil {
+		t.Error("returned error is nil")
+	}
+
+	if err != io.ErrUnexpectedEOF {
+		t.Errorf("expected \"Unexpected EOF\". received \"%s\"", err.Error())
+	}
+}
+
+func TestReadSmplChunk_Fail_NumSmplLoops_Is_0(t *testing.T) {
+	b := []byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+		0x00, 0x93, 0x58, 0x00, 0x00, 0x2d, 0x00, 0x00, 0x00,
+		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}
+
+	r := bytes.NewReader(b)
+
+	s, err := readSmplChunk(r)
+
+	if s == nil {
+		t.Error("returned smpl chunk is nil")
+	}
+
+	if err != nil {
+		t.Error(err.Error())
+	}
+
+	if len(s.Loops) != 0 {
+		t.Errorf("expected 0 loops. received %d loops", len(s.Loops))
+	}
+}
+
+func TestReadSmplChunk_Fail_No_Loop_Cue_Point_ID(t *testing.T) {
+	b := []byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+		0x00, 0x93, 0x58, 0x00, 0x00, 0x2d, 0x00, 0x00, 0x00,
+		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+		0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00}
+
+	r := bytes.NewReader(b)
+
+	s, err := readSmplChunk(r)
+
+	if s != nil {
+		t.Error("returned smpl chunk is not nil")
+	}
+
+	if err == nil {
+		t.Error("returned error is nil")
+	}
+
+	if err != io.EOF {
+		t.Errorf("expected \"EOF\". received \"%s\"", err.Error())
+	}
+}
+
+func TestReadSmplChunk_Fail_Short_Loop_Cue_Point_ID(t *testing.T) {
+	b := []byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+		0x00, 0x93, 0x58, 0x00, 0x00, 0x2d, 0x00, 0x00, 0x00,
+		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+		0x00, 0x00, 0x00, 0x01, 0x00}
+
+	r := bytes.NewReader(b)
+
+	s, err := readSmplChunk(r)
+
+	if s != nil {
+		t.Error("returned smpl chunk is not nil")
+	}
+
+	if err == nil {
+		t.Error("returned error is nil")
+	}
+
+	if err != io.ErrUnexpectedEOF {
+		t.Errorf("expected \"Unexpected EOF\". received \"%s\"", err.Error())
+	}
+}
+
+func TestReadSmplChunk_Fail_No_Loop_Type(t *testing.T) {
+	b := []byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+		0x00, 0x93, 0x58, 0x00, 0x00, 0x2d, 0x00, 0x00, 0x00,
+		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+		0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00,
+		0x00, 0x00}
+
+	r := bytes.NewReader(b)
+
+	s, err := readSmplChunk(r)
+
+	if s != nil {
+		t.Error("returned smpl chunk is not nil")
+	}
+
+	if err == nil {
+		t.Error("returned error is nil")
+	}
+
+	if err != io.EOF {
+		t.Errorf("expected \"EOF\". received \"%s\"", err.Error())
+	}
+}
+
+func TestReadSmplChunk_Fail_Short_Loop_Type(t *testing.T) {
+	b := []byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+		0x00, 0x93, 0x58, 0x00, 0x00, 0x2d, 0x00, 0x00, 0x00,
+		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+		0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00,
+		0x00, 0x00, 0x00}
+
+	r := bytes.NewReader(b)
+
+	s, err := readSmplChunk(r)
+
+	if s != nil {
+		t.Error("returned smpl chunk is not nil")
+	}
+
+	if err == nil {
+		t.Error("returned error is nil")
+	}
+
+	if err != io.ErrUnexpectedEOF {
+		t.Errorf("expected \"Unexpected EOF\". received \"%s\"", err.Error())
+	}
+}
+
+func TestReadSmplChunk_Fail_No_Loop_Start(t *testing.T) {
+	b := []byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+		0x00, 0x93, 0x58, 0x00, 0x00, 0x2d, 0x00, 0x00, 0x00,
+		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+		0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00,
+		0x00, 0x00, 0x00, 0x00, 0x00, 0x00}
+
+	r := bytes.NewReader(b)
+
+	s, err := readSmplChunk(r)
+
+	if s != nil {
+		t.Error("returned smpl chunk is not nil")
+	}
+
+	if err == nil {
+		t.Error("returned error is nil")
+	}
+
+	if err != io.EOF {
+		t.Errorf("expected \"EOF\". received \"%s\"", err.Error())
+	}
+}
+
+func TestReadSmplChunk_Fail_Short_Loop_Start(t *testing.T) {
+	b := []byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+		0x00, 0x93, 0x58, 0x00, 0x00, 0x2d, 0x00, 0x00, 0x00,
+		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+		0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00,
+		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}
+
+	r := bytes.NewReader(b)
+
+	s, err := readSmplChunk(r)
+
+	if s != nil {
+		t.Error("returned smpl chunk is not nil")
+	}
+
+	if err == nil {
+		t.Error("returned error is nil")
+	}
+
+	if err != io.ErrUnexpectedEOF {
+		t.Errorf("expected \"Unexpected EOF\". received \"%s\"", err.Error())
+	}
+}
+
+func TestReadSmplChunk_Fail_No_Loop_End(t *testing.T) {
+	b := []byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+		0x00, 0x93, 0x58, 0x00, 0x00, 0x2d, 0x00, 0x00, 0x00,
+		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+		0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00,
+		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+		0x00}
+
+	r := bytes.NewReader(b)
+
+	s, err := readSmplChunk(r)
+
+	if s != nil {
+		t.Error("returned smpl chunk is not nil")
+	}
+
+	if err == nil {
+		t.Error("returned error is nil")
+	}
+
+	if err != io.EOF {
+		t.Errorf("expected \"EOF\". received \"%s\"", err.Error())
+	}
+}
+
+func TestReadSmplChunk_Fail_Short_Loop_End(t *testing.T) {
+	b := []byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+		0x00, 0x93, 0x58, 0x00, 0x00, 0x2d, 0x00, 0x00, 0x00,
+		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+		0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00,
+		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+		0x00, 0x00, 0x00}
+
+	r := bytes.NewReader(b)
+
+	s, err := readSmplChunk(r)
+
+	if s != nil {
+		t.Error("returned smpl chunk is not nil")
+	}
+
+	if err == nil {
+		t.Error("returned error is nil")
+	}
+
+	if err != io.ErrUnexpectedEOF {
+		t.Errorf("expected \"Unexpected EOF\". received \"%s\"", err.Error())
+	}
+}
+
+func TestReadSmplChunk_Fail_No_Loop_Fraction(t *testing.T) {
+	b := []byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+		0x00, 0x93, 0x58, 0x00, 0x00, 0x2d, 0x00, 0x00, 0x00,
+		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+		0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00,
+		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+		0x00, 0x00, 0x00, 0x00, 0x00}
+
+	r := bytes.NewReader(b)
+
+	s, err := readSmplChunk(r)
+
+	if s != nil {
+		t.Error("returned smpl chunk is not nil")
+	}
+
+	if err == nil {
+		t.Error("returned error is nil")
+	}
+
+	if err != io.EOF {
+		t.Errorf("expected \"EOF\". received \"%s\"", err.Error())
+	}
+}
+
+func TestReadSmplChunk_Fail_Short_Loop_Fraction(t *testing.T) {
+	b := []byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+		0x00, 0x93, 0x58, 0x00, 0x00, 0x2d, 0x00, 0x00, 0x00,
+		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+		0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00,
+		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}
+
+	r := bytes.NewReader(b)
+
+	s, err := readSmplChunk(r)
+
+	if s != nil {
+		t.Error("returned smpl chunk is not nil")
+	}
+
+	if err == nil {
+		t.Error("returned error is nil")
+	}
+
+	if err != io.ErrUnexpectedEOF {
+		t.Errorf("expected \"Unexpected EOF\". received \"%s\"", err.Error())
+	}
+}
+
+func TestReadSmplChunk_Fail_No_Loop_PlayCount(t *testing.T) {
+	b := []byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+		0x00, 0x93, 0x58, 0x00, 0x00, 0x2d, 0x00, 0x00, 0x00,
+		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+		0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00,
+		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}
+
+	r := bytes.NewReader(b)
+
+	s, err := readSmplChunk(r)
+
+	if s != nil {
+		t.Error("returned smpl chunk is not nil")
+	}
+
+	if err == nil {
+		t.Error("returned error is nil")
+	}
+
+	if err != io.EOF {
+		t.Errorf("expected \"EOF\". received \"%s\"", err.Error())
+	}
+}
+
+func TestReadSmplChunk_Fail_Short_Loop_PlayCount(t *testing.T) {
+	b := []byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+		0x00, 0x93, 0x58, 0x00, 0x00, 0x2d, 0x00, 0x00, 0x00,
+		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+		0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00,
+		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+		0x00, 0x00}
+
+	r := bytes.NewReader(b)
+
+	s, err := readSmplChunk(r)
+
+	if s != nil {
+		t.Error("returned smpl chunk is not nil")
+	}
+
+	if err == nil {
+		t.Error("returned error is nil")
+	}
+
+	if err != io.ErrUnexpectedEOF {
+		t.Errorf("expected \"Unexpected EOF\". received \"%s\"", err.Error())
+	}
 }
