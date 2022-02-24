@@ -3,6 +3,7 @@ package decoder
 import (
 	"bytes"
 	"io"
+	"strings"
 )
 
 type adtlChunk struct {
@@ -28,6 +29,8 @@ func readADTLChunk(r *bytes.Reader) (*adtlChunk, error) {
 		if c.Size%2 != 0 {
 			c.Size++
 		}
+
+		c.ID = strings.ToUpper(c.ID)
 
 		switch c.ID {
 		case lablChunkID:

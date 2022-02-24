@@ -5,6 +5,7 @@ import (
 	"encoding/binary"
 	"errors"
 	"io"
+	"strings"
 )
 
 type wavChunks struct {
@@ -33,10 +34,13 @@ func readWavChunks(r *bytes.Reader) (*wavChunks, error) {
 			return nil, err
 		}
 
-		// FIXME: Move to chunk method and return error if the provided file is not word-aligned?
-		//if size%2 == 1 {
-		//	size++
-		//}
+		// If the size is an odd number, read an extra byte
+		// in order to stay in a word-aligned position
+		if c.Size%2 == 1 {
+			c.Size++
+		}
+
+		c.ID = strings.ToUpper(c.ID)
 
 		switch c.ID {
 		case fmtChunkID:
@@ -79,7 +83,6 @@ func readWavChunks(r *bytes.Reader) (*wavChunks, error) {
 			if err != nil {
 				return nil, err
 			}
-			//return nil
 		default:
 			_, err = r.Seek(int64(c.Size), 1)
 			if err != nil {
@@ -113,14 +116,14 @@ func handleLISTChunk(r *bytes.Reader, c *chunk, wc *wavChunks) error {
 	if err != nil {
 		return err
 	}
-	if string(i[:]) == infoChunkID {
+	if strings.ToUpper(string(i[:])) == infoChunkID {
 		ic, err := readINFOChunk(listr)
 		if err != nil {
 			return err
 		}
 		wc.Info = ic
 	}
-	if string(i[:]) == associatedDataListChunkID {
+	if strings.ToUpper(string(i[:])) == associatedDataListChunkID {
 		ac, err := readADTLChunk(listr)
 		if err != nil {
 			return err
@@ -166,7 +169,7 @@ func handleSMPLChunk(r *bytes.Reader, c *chunk, wc *wavChunks) error {
 
 	sc, err := readSmplChunk(smplr)
 	if err != nil {
-		return nil
+		return err
 	}
 	wc.Sample = sc
 	return nil
