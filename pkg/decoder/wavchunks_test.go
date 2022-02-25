@@ -6,6 +6,193 @@ import (
 	"testing"
 )
 
+func TestReadWavChunks_Success_No_Chunk_ID(t *testing.T) {
+	b := []byte{}
+
+	r := bytes.NewReader(b)
+
+	wc, err := readWavChunks(r)
+
+	if wc == nil {
+		t.Error("returned wav chunks is nil")
+	}
+
+	if wc.FMT != nil {
+		t.Error("returned fmt is not nil")
+	}
+
+	if err != nil {
+		t.Error(err.Error())
+	}
+}
+
+func TestReadWavChunks_Fail_Short_Chunk_ID(t *testing.T) {
+	b := []byte{
+		// FMT
+		0x66, 0x6d, 0x74, // Chunk ID
+	}
+
+	r := bytes.NewReader(b)
+
+	wc, err := readWavChunks(r)
+
+	if wc != nil {
+		t.Error("returned chunk is not nil")
+	}
+
+	if err == nil {
+		t.Error("returned error is nil")
+	}
+
+	if err != io.ErrUnexpectedEOF {
+		t.Errorf("expected \"Unexpected EOF\". received \"%s\"", err.Error())
+	}
+}
+
+func TestReadWavChunks_Success_No_Chunk_Size(t *testing.T) {
+	b := []byte{
+		// FMT
+		0x66, 0x6d, 0x74, 0x20, // Chunk ID
+	}
+
+	r := bytes.NewReader(b)
+
+	wc, err := readWavChunks(r)
+
+	if wc == nil {
+		t.Error("returned wav chunks is nil")
+	}
+
+	if wc.FMT != nil {
+		t.Error("returned fmt is not nil")
+	}
+
+	if err != nil {
+		t.Error(err.Error())
+	}
+
+}
+
+func TestReadWavChunks_Fail_Before_Data_Short_Size_FMT(t *testing.T) {
+	b := []byte{
+		// FMT
+		0x66, 0x6d, 0x74, 0x20, // Chunk ID
+		0x00,
+	}
+
+	r := bytes.NewReader(b)
+
+	wc, err := readWavChunks(r)
+
+	if wc != nil {
+		t.Error("returned chunk is not nil")
+	}
+
+	if err == nil {
+		t.Error("returned error is nil")
+	}
+
+	if err != io.ErrUnexpectedEOF {
+		t.Errorf("expected \"Unexpected EOF\". received \"%s\"", err.Error())
+	}
+}
+
+func TestReadWavChunks_Fail_Data_Before_FMT(t *testing.T) {
+	b := []byte{
+		// DATA
+		0x64, 0x61, 0x74, 0x61,
+		0x08, 0x00, 0x00, 0x00,
+		0x00, 0x00, 0x00, 0x00,
+		0x00, 0x00, 0x00, 0x00,
+
+		// FMT
+		0x66, 0x6d, 0x74, 0x20, // Chunk ID
+		0x10, 0x00, 0x00, 0x00, // Chunk Size
+		0x01, 0x00, // AudioFormat
+		0x01, 0x00, // NumChannels
+		0x40, 0x1f, 0x00, 0x00, // Sample Rate
+		0x80, 0x3e, 0x00, 0x00, // ByteRate
+		0x02, 0x00, // Block Align
+		0x10, 0x00, // BitsPerSample
+	}
+
+	r := bytes.NewReader(b)
+
+	wc, err := readWavChunks(r)
+
+	if wc != nil {
+		t.Error("returned chunk is not nil")
+	}
+
+	if err == nil {
+		t.Error("returned error is not nil")
+	}
+
+	if err.Error() != "Data chunk was found before fmt chunk" {
+		t.Errorf("expected \"Data chunk was found before fmt chunk\". receieved\"%s\"", err.Error())
+	}
+}
+
+func TestReadWavChunks_Success_Unsupported_Chunk_ID_Odd_Chunk_Size(t *testing.T) {
+	b := []byte{
+		0x66, 0x0c, 0x0c, 0x20, // Chunk ID
+		0x07, 0x00, 0x00, 0x00,
+		0x00, 0x00, 0x00, 0x00,
+		0x00, 0x00, 0x00, 0x00,
+
+		// FMT
+		0x66, 0x6d, 0x74, 0x20, // Chunk ID
+		0x10, 0x00, 0x00, 0x00, // Chunk Size
+		0x01, 0x00, // AudioFormat
+		0x01, 0x00, // NumChannels
+		0x44, 0xac, 0x00, 0x00, // Sample Rate
+		0x80, 0x3e, 0x00, 0x00, // ByteRate
+		0x02, 0x00, // Block Align
+		0x10, 0x00, // BitsPerSample
+	}
+
+	r := bytes.NewReader(b)
+
+	wc, err := readWavChunks(r)
+
+	if err != nil {
+		t.Error(err.Error())
+	}
+
+	if wc == nil {
+		t.Error("returned chunk is nil")
+	}
+
+	if wc.FMT == nil {
+		t.Error("returned fmt chunk is nil")
+	}
+
+	if wc.FMT.AudioFormat != 1 {
+		t.Errorf("expected audio format 1. received audio format %d", wc.FMT.AudioFormat)
+	}
+
+	if wc.FMT.NumChannels != 1 {
+		t.Errorf("expected num channels 1. received num channels %d", wc.FMT.NumChannels)
+	}
+
+	if wc.FMT.SampleRate != 44100 {
+		t.Errorf("expected sample rate 44100. received sample rate %d", wc.FMT.SampleRate)
+	}
+
+	if wc.FMT.ByteRate != 16000 {
+		t.Errorf("expected byte rate 16000. received byte rate %d", wc.FMT.ByteRate)
+	}
+
+	if wc.FMT.BlockAlign != 2 {
+		t.Errorf("expected block align 2. received block align %d", wc.FMT.BlockAlign)
+	}
+
+	if wc.FMT.BitsPerSample != 16 {
+		t.Errorf("expected bits per sample 16. received bits per sample %d", wc.FMT.BitsPerSample)
+	}
+
+}
+
 func TestReadWavChunks_Success_Before_Data(t *testing.T) {
 	b := []byte{
 		// FMT
@@ -143,7 +330,7 @@ func TestReadWavChunks_Success_Before_Data(t *testing.T) {
 
 }
 
-func TestReadWavChunks_Success_Before_Data_Short_FMT(t *testing.T) {
+func TestReadWavChunks_Fail_Before_Data_Short_FMT(t *testing.T) {
 	b := []byte{
 		// FMT
 		0x66, 0x6d, 0x74, 0x20, // Chunk ID
@@ -174,7 +361,7 @@ func TestReadWavChunks_Success_Before_Data_Short_FMT(t *testing.T) {
 
 }
 
-func TestReadWavChunks_Success_Before_Data_Short_LIST(t *testing.T) {
+func TestReadWavChunks_Fail_Before_Data_Short_LIST(t *testing.T) {
 	b := []byte{
 		// LIST
 		0x4c, 0x49, 0x53, 0x54, 0x0c, 0x00, 0x00, 0x00, 0x61,
@@ -207,7 +394,7 @@ func TestReadWavChunks_Success_Before_Data_Short_LIST(t *testing.T) {
 
 }
 
-func TestReadWavChunks_Success_Before_Data_Short_FACT(t *testing.T) {
+func TestReadWavChunks_Fail_Before_Data_Short_FACT(t *testing.T) {
 	b := []byte{
 		// FACT
 		0x46, 0x41, 0x43, 0x54,
@@ -233,7 +420,7 @@ func TestReadWavChunks_Success_Before_Data_Short_FACT(t *testing.T) {
 
 }
 
-func TestReadWavChunks_Success_Before_Data_Short_PLST(t *testing.T) {
+func TestReadWavChunks_Fail_Before_Data_Short_PLST(t *testing.T) {
 	b := []byte{
 		// PLST
 		0x50, 0x4c, 0x53, 0x54,
@@ -262,7 +449,7 @@ func TestReadWavChunks_Success_Before_Data_Short_PLST(t *testing.T) {
 
 }
 
-func TestReadWavChunks_Success_Before_Data_Short_SMPL(t *testing.T) {
+func TestReadWavChunks_Fail_Before_Data_Short_SMPL(t *testing.T) {
 	b := []byte{
 		// SMPL
 		0x53, 0x4d, 0x50, 0x4c,
@@ -294,7 +481,7 @@ func TestReadWavChunks_Success_Before_Data_Short_SMPL(t *testing.T) {
 
 }
 
-func TestReadWavChunks_Success_Before_Data_Short_INST(t *testing.T) {
+func TestReadWavChunks_Fail_Before_Data_Short_INST(t *testing.T) {
 	b := []byte{
 		// INST
 		0x49, 0x4e, 0x53, 0x54,
@@ -321,7 +508,7 @@ func TestReadWavChunks_Success_Before_Data_Short_INST(t *testing.T) {
 
 }
 
-func TestReadWavChunks_Success_Before_Data_Short_CUE(t *testing.T) {
+func TestReadWavChunks_Fail_Before_Data_Short_CUE(t *testing.T) {
 	b := []byte{
 		// CUE
 		0x43, 0x55, 0x45, 0x20,
