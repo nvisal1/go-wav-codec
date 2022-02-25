@@ -77,6 +77,14 @@ func (d *Decoder) ReadMetadata() error {
 
 	d.WC = wc
 
+	// Increase the data position by 12 to make up
+	// for the 12 bytes in the wav header
+	//
+	// we create a reader of length 12 when reading the RIFF header
+	// because of that, the next reader (that is used for readWavChunks)
+	// is 12 positions behind the actual file
+	d.WC.DataPosition += 12
+
 	return nil
 }
 
@@ -107,8 +115,8 @@ func (d *Decoder) ReadAudioData(s int, whence int) ([]int, error) {
 }
 
 func (d *Decoder) toDataStart() error {
-	if d.WC.DataPosition != 0 {
-		_, err := d.r.Seek(d.WC.DataPosition+12, 0)
+	if d.WC != nil && d.WC.DataPosition != 0 {
+		_, err := d.r.Seek(d.WC.DataPosition, 0)
 		if err != nil {
 			return err
 		}
@@ -124,7 +132,7 @@ func (d *Decoder) toDataStart() error {
 		return err
 	}
 
-	_, err = d.r.Seek(d.WC.DataPosition+12, 0)
+	_, err = d.r.Seek(d.WC.DataPosition, 0)
 	if err != nil {
 		return err
 	}
