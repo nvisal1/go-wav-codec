@@ -214,6 +214,7 @@ func handleDATAChunk(r *bytes.Reader, c *chunk, wc *wavChunks) error {
 	if err != nil {
 		return err
 	}
+
 	wc.DataPosition = p
 	wc.DataLength = c.Size
 	_, err = r.Seek(int64(c.Size), 1)
