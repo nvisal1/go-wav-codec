@@ -67,6 +67,12 @@ func readINFOChunk(r *bytes.Reader) (*infoChunk, error) {
 			return nil, err
 		}
 
+		if c.Size%2 != 0 {
+			c.Size++
+		}
+
+		c.ID = strings.ToUpper(c.ID)
+
 		scratch := make([]byte, c.Size)
 
 		if err = binary.Read(r, binary.BigEndian, &scratch); err != nil {
