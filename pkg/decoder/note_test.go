@@ -31,7 +31,7 @@ func TestReadNoteChunk_Fail_No_Cue_Point_ID(t *testing.T) {
 	l, err := readNoteChunk(r, uint32(len(b)))
 
 	if l != nil {
-		t.Error("returned labl chunk is not nil")
+		t.Error("returned note chunk is not nil")
 	}
 
 	if err == nil {
@@ -51,7 +51,7 @@ func TestReadNoteChunk_Fail_Short_Cue_Point_ID(t *testing.T) {
 	l, err := readNoteChunk(r, uint32(len(b)))
 
 	if l != nil {
-		t.Error("returned labl chunk is not nil")
+		t.Error("returned note chunk is not nil")
 	}
 
 	if err == nil {
@@ -71,7 +71,7 @@ func TestReadNoteChunk_Fail_No_Data(t *testing.T) {
 	l, err := readNoteChunk(r, uint32(12))
 
 	if l != nil {
-		t.Error("returned labl chunk is not nil")
+		t.Error("returned note chunk is not nil")
 	}
 
 	if err == nil {
@@ -91,7 +91,7 @@ func TestReadNoteChunk_Fail_Short_Data(t *testing.T) {
 	l, err := readNoteChunk(r, uint32(12))
 
 	if l != nil {
-		t.Error("returned labl chunk is not nil")
+		t.Error("returned note chunk is not nil")
 	}
 
 	if err == nil {
