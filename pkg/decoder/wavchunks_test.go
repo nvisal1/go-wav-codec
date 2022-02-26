@@ -361,6 +361,31 @@ func TestReadWavChunks_Fail_Before_Data_Short_FMT(t *testing.T) {
 
 }
 
+func TestReadWavChunks_Fail_Before_Data_No_FMT(t *testing.T) {
+	b := []byte{
+		// FMT
+		0x66, 0x6d, 0x74, 0x20, // Chunk ID
+		0x08, 0x00, 0x00, 0x00, // Chunk Size
+	}
+
+	r := bytes.NewReader(b)
+
+	wc, err := readWavChunks(r)
+
+	if wc != nil {
+		t.Error("returned wav chunks is not nil")
+	}
+
+	if err == nil {
+		t.Error("returned error is nil")
+	}
+
+	if err != io.EOF {
+		t.Errorf("expected \"EOF\". received \"%s\"", err.Error())
+	}
+
+}
+
 func TestReadWavChunks_Fail_Before_Data_Short_LIST(t *testing.T) {
 	b := []byte{
 		// LIST
@@ -374,6 +399,30 @@ func TestReadWavChunks_Fail_Before_Data_Short_LIST(t *testing.T) {
 		0x65, 0x11, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00,
 		0x53, 0x61, 0x6d, 0x70, 0x6c, 0x65, 0x72, 0x20, 0x6c,
 		0x6f, 0x6f, 0x70, 0x00, 0x00,
+	}
+
+	r := bytes.NewReader(b)
+
+	wc, err := readWavChunks(r)
+
+	if wc != nil {
+		t.Error("returned wav chunks is not nil")
+	}
+
+	if err == nil {
+		t.Error("returned error is nil")
+	}
+
+	if err != io.EOF {
+		t.Errorf("expected \"EOF\". received \"%s\"", err.Error())
+	}
+
+}
+
+func TestReadWavChunks_Fail_Before_Data_No_LIST(t *testing.T) {
+	b := []byte{
+		// LIST
+		0x4c, 0x49, 0x53, 0x54, 0x0c, 0x00, 0x00, 0x00,
 	}
 
 	r := bytes.NewReader(b)
@@ -420,6 +469,31 @@ func TestReadWavChunks_Fail_Before_Data_Short_FACT(t *testing.T) {
 
 }
 
+func TestReadWavChunks_Fail_Before_Data_No_FACT(t *testing.T) {
+	b := []byte{
+		// FACT
+		0x46, 0x41, 0x43, 0x54,
+		0x00, 0x00, 0x00, 0x00,
+	}
+
+	r := bytes.NewReader(b)
+
+	wc, err := readWavChunks(r)
+
+	if wc != nil {
+		t.Error("returned wav chunks is not nil")
+	}
+
+	if err == nil {
+		t.Error("returned error is nil")
+	}
+
+	if err != io.EOF {
+		t.Errorf("expected \"EOF\". received \"%s\"", err.Error())
+	}
+
+}
+
 func TestReadWavChunks_Fail_Before_Data_Short_PLST(t *testing.T) {
 	b := []byte{
 		// PLST
@@ -429,6 +503,31 @@ func TestReadWavChunks_Fail_Before_Data_Short_PLST(t *testing.T) {
 		0x49, 0x44, 0x20, 0x20,
 		0x01, 0x00, 0x00, 0x00,
 		0x01, 0x00, 0x00, 0x00,
+	}
+
+	r := bytes.NewReader(b)
+
+	wc, err := readWavChunks(r)
+
+	if wc != nil {
+		t.Error("returned wav chunks is not nil")
+	}
+
+	if err == nil {
+		t.Error("returned error is nil")
+	}
+
+	if err != io.EOF {
+		t.Errorf("expected \"EOF\". received \"%s\"", err.Error())
+	}
+
+}
+
+func TestReadWavChunks_Fail_Before_Data_No_PLST(t *testing.T) {
+	b := []byte{
+		// PLST
+		0x50, 0x4c, 0x53, 0x54,
+		0x08, 0x00, 0x00, 0x00,
 	}
 
 	r := bytes.NewReader(b)
@@ -481,6 +580,31 @@ func TestReadWavChunks_Fail_Before_Data_Short_SMPL(t *testing.T) {
 
 }
 
+func TestReadWavChunks_Fail_Before_Data_No_SMPL(t *testing.T) {
+	b := []byte{
+		// SMPL
+		0x53, 0x4d, 0x50, 0x4c,
+		0x08, 0x00, 0x00, 0x00,
+	}
+
+	r := bytes.NewReader(b)
+
+	wc, err := readWavChunks(r)
+
+	if wc != nil {
+		t.Error("returned wav chunks is not nil")
+	}
+
+	if err == nil {
+		t.Error("returned error is nil")
+	}
+
+	if err != io.EOF {
+		t.Errorf("expected \"EOF\". received \"%s\"", err.Error())
+	}
+
+}
+
 func TestReadWavChunks_Fail_Before_Data_Short_INST(t *testing.T) {
 	b := []byte{
 		// INST
@@ -488,6 +612,31 @@ func TestReadWavChunks_Fail_Before_Data_Short_INST(t *testing.T) {
 		0x00, 0x00, 0x00, 0x00,
 		0x3c, 0x00, 0x00, 0x00,
 		0x7f, 0x01, 0x7f, 0x00,
+	}
+
+	r := bytes.NewReader(b)
+
+	wc, err := readWavChunks(r)
+
+	if wc != nil {
+		t.Error("returned wav chunks is not nil")
+	}
+
+	if err == nil {
+		t.Error("returned error is nil")
+	}
+
+	if err != io.EOF {
+		t.Errorf("expected \"EOF\". received \"%s\"", err.Error())
+	}
+
+}
+
+func TestReadWavChunks_Fail_Before_Data_No_INST(t *testing.T) {
+	b := []byte{
+		// INST
+		0x49, 0x4e, 0x53, 0x54,
+		0x00, 0x00, 0x00, 0x00,
 	}
 
 	r := bytes.NewReader(b)
@@ -520,6 +669,31 @@ func TestReadWavChunks_Fail_Before_Data_Short_CUE(t *testing.T) {
 		0x00, 0x00, 0x00, 0x00,
 		0x00, 0x00, 0x00, 0x00,
 		0xa0, 0x0f, 0x00, 0x00,
+	}
+
+	r := bytes.NewReader(b)
+
+	wc, err := readWavChunks(r)
+
+	if wc != nil {
+		t.Error("returned wav chunks is not nil")
+	}
+
+	if err == nil {
+		t.Error("returned error is nil")
+	}
+
+	if err != io.EOF {
+		t.Errorf("expected \"EOF\". received \"%s\"", err.Error())
+	}
+
+}
+
+func TestReadWavChunks_Fail_Before_Data_No_CUE(t *testing.T) {
+	b := []byte{
+		// CUE
+		0x43, 0x55, 0x45, 0x20,
+		0x00, 0x00, 0x00, 0x00,
 	}
 
 	r := bytes.NewReader(b)
