@@ -196,7 +196,7 @@ for {
 
 | Size (bytes) |                Description                 |                           Value                           |
 |:------------:|:------------------------------------------:|:---------------------------------------------------------:|
-|      4       |                  Chunk ID                  |                          "fmt "                           |
+|      4       |                  Chunk ID                  |          "fmt " **(this library case insensitive)**           |
 |      4       |                 Chunk Size                 | 16 **(this library does not support extra format bytes)** |
 |      2       |      Audio Format (Compression Code)       |          1 **(this library only supports PCM)**           |
 |      2       |             Number of Channels             |                        1 - 65,535                         |
@@ -206,17 +206,33 @@ for {
 |      2       |        Bits Per Sample (Bit Depth)         |                        2 - 65,535                         |
 |     N/A      |_**Extra Format Bytes are not supported**_  |                            N/A                            |
 
-#### Fact
+#### [Fact](https://sites.google.com/site/musicgapi/technical-documents/wav-file-format#fact)
 
-| Size |           Description           | Value |
-|:----:|:-------------------------------:|:-----:|
-| LIST | Includes support for type INFO. |
+| Size (bytes) |    Description    |                                          Value                                          |
+|:------------:|:-----------------:|:---------------------------------------------------------------------------------------:|
+|      4       |     Chunk ID      |                       "fact" **(this library case insensitive)**                        |
+|      4       |    Chunk Size     |                  4 **(this library only supports number of samples)**                   |
+|      4       | Number of Samples |                                     1 - 0xFFFFFFFF                                      | 
 
-#### Cue
+#### [Cue](https://sites.google.com/site/musicgapi/technical-documents/wav-file-format#cue)
 
-| Size |           Description           | Value |
-|:----:|:-------------------------------:|:-----:|
-| LIST | Includes support for type INFO. |
+| Size |       Description        |                           Value                            |
+|:----:|:------------------------:|:----------------------------------------------------------:|
+|  4   |         Chunk ID         |         "cue " **(this library case insensitive)**         |
+|  4   |        Chunk Size        |                  4 + (NumCuePoints * 24)                   |
+|  4   |   Number of Cue Points   |                    number of cue points                    |
+| N/A  |**Cue Points Start Here** |                            N/A                             |
+
+###### Cue Point
+
+| Size |  Description  |                                        Value                                         |
+|:----:|:-------------:|:------------------------------------------------------------------------------------:|
+|  4   |      ID       |                             unique identification value                              |
+|  4   |   Position    |                                 play order position                                  |
+|  4   | Data Chunk ID |                         RIFF ID of corresponding data chunk                          |
+|  4   |  Chunk Start  |                              	Byte Offset of Data Chunk                              |
+|  4   |  Block Start  |                        Byte Offset to sample of First Channel                        |
+|  4   | Sample Offset |                     Byte Offset to sample byte of First Channel                      |
 
 #### Plst
 
