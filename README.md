@@ -1,6 +1,6 @@
 # Go WAV Codec
 
-[![Go](https://github.com/nvisal1/Wav-Codec-POC/actions/workflows/go.yml/badge.svg?branch=master)](https://github.com/nvisal1/Wav-Codec-POC/actions/workflows/go.yml)
+[![Build](https://github.com/nvisal1/Wav-Codec-POC/actions/workflows/go.yml/badge.svg?branch=master)](https://github.com/nvisal1/Wav-Codec-POC/actions/workflows/go.yml)
 [![codecov](https://codecov.io/gh/nvisal1/Go-Wav-Codec/branch/master/graph/badge.svg?token=4DRC08BB3G)](https://codecov.io/gh/nvisal1/Go-Wav-Codec)
 [![made-with-Go](https://img.shields.io/badge/Made%20with-Go-1f425f.svg)](http://golang.org)
 [![GitHub go.mod Go version of a Go module](https://img.shields.io/github/go-mod/go-version/gomods/athens.svg)]()
@@ -12,36 +12,53 @@
 <img src="./assets/gopher.png" alt="drawing" width="500"/>
 
 ## Table of Contents
-* Summary
-* Installation
-* Encoder
-* Decoder
-* Practical Examples
-* Contributing
+* [Summary](#Summary)
+* [Installation](#Installation)
+* [Encoder](#Encoder)
+* [Decoder](#Decoder)
+* [Practical Examples](#Practical-Examples)
+* [Expected Chunk Formats](#Expected-Chunk-Formats)
+* [Contributing](#Contributing)
+* [License](#License)
 
 ## Summary
 
 This audio codec includes a simple API that makes it easy to read and write WAV files in Go!
 
 It includes support for **reading** WAV files that include
-* LIST
-* adtl
-* INFO
-* labl
-* note
-* ltxt
-* smpl
-* fact
-* plst
-* cue
-* inst
+
+
+| Chunk ID |                                                                                                                                            Description                                                                                                                                             |
+|:--------:|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
+|   LIST   | Includes support for types ADTL and INFO. ADTL chunks can include <br/> LTXT, LABL and NOTE chunks<br/>Learn about [INFO](https://www.recordingblogs.com/wiki/list-chunk-of-a-wave-file) <br/>Learn about [ADTL](https://sites.google.com/site/musicgapi/technical-documents/wav-file-format#list) |
+|   SMPL   |                                                                                                                                                301                                                                                                                                                 |
+|   FACT   |                                                                                                                                                301                                                                                                                                                 |
+|   PLST   |                                                                                                                                                301                                                                                                                                                 |
+|   CUE    |                                                                                                                                                301                                                                                                                                                 |
+|   INST   |                                                                                                                                                301                                                                                                                                                 |
+
 
 and support for **writing** Wav files with
 
-* LIST
-* INFO
+| Chunk ID |           Description           |
+|:--------:|:-------------------------------:|
+|   LIST   | Includes support for type INFO. |
+
 
 _**(as most metadata chunks are frowned upon - they are not supported by many applications)**_
+
+## Installation
+
+Using the go wav codec is easy. First, use go get to install the latest version of the library. 
+
+```bash
+go get github.com/nvisal1/go-wav-codec
+```
+
+Next, include go-wav-codec in your application
+```go
+import "github.com/nvisal1/go-wav-codec"
+```
 
 ## Encoder
 
@@ -110,11 +127,7 @@ ic := &InfoChunk{
 		Medium:       "",
 	}
 
-lic := &ListChunk{
-    info: ic,
-}
-
-err = e.WriteMetadata(lic)
+err = e.WriteMetadata(ic)
 if err != nil {
     t.Error(err
 
@@ -176,7 +189,6 @@ for {
 }
 ```
 
-## Practical Examples
+## License
 
-
-
+Go Wav Codec is released under the MIT license. See [LICENSE](https://github.com/nvisal1/Go-Wav-Codec/blob/master/LICENSE)
