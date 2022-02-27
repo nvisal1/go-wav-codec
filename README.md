@@ -292,6 +292,34 @@ for {
 |  4   | Cue Point ID |               0 - 0xFFFFFFFF               | 
 | N/A  |     Text     |                    N/A                     |
 
+#### [info chunks](https://www.recordingblogs.com/wiki/list-chunk-of-a-wave-file)
+
+| Chunk ID |  Description  | Is Supported <br/>(by this library)  |
+|:--------:|:-------------:|:------------------------------------:|
+|   IARL   |   Location    |                  ✅                   |
+|   IART   |    Artist     |                  ✅                   |
+|   ICMS   |               |                  ⬜️                  |
+|   ICMT   |   Comments    |                  ✅                   |
+|   ICOP   |   Copyright   |                  ✅                   |
+|   ICRD   | Creation Date |                  ✅                   |
+|   ICRP   |               |                  ⬜️                  |
+|   IDIM   |               |                  ⬜️                  |
+|   IDPI   |               |                  ⬜️                  |
+|   IENG   |   Engineer    |                  ✅                   |
+|   IGNR   |     Genre     |                  ✅                   |
+|   IKEY   |   Keywords    |                  ✅                   |
+|   ILGT   |               |                  ⬜️                    |
+|   IMED   |    Medium     |                  ✅                   |
+|   INAM   |     Title     |                  ✅                   |
+|   IPLT   |               |                  ⬜️                    |
+|   IPRD   |    Product    |                  ✅                   |
+|   ISBJ   |    Subject    |                  ✅                   |
+|   ISFT   |   Software    |                  ✅                   |
+|   ISRC   |    Source     |                  ✅                   |
+|   ISRF   |               |                  ⬜️                    |
+|   ITCH   |  Technician   |                  ✅                   |
+|   ITRK   |               |                  ⬜️                    |
+
 #### [smpl](https://sites.google.com/site/musicgapi/technical-documents/wav-file-format#smpl)
 
 | Size |         Description          |                       Value                       |
