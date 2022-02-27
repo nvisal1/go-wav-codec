@@ -18,6 +18,7 @@
 * [Decoder](#Decoder)
 * [Practical Examples](#Practical-Examples)
 * [Expected Chunk Formats](#Expected-Chunk-Formats)
+* [Resources](#Resources)
 * [Contributing](#Contributing)
 * [License](#License)
 
@@ -188,6 +189,85 @@ for {
     a = append(a, ad...)
 }
 ```
+
+## Expected Chunk Formats
+
+#### [FMT](https://sites.google.com/site/musicgapi/technical-documents/wav-file-format#fmt)
+
+| Size (bytes) |                Description                 |                           Value                           |
+|:------------:|:------------------------------------------:|:---------------------------------------------------------:|
+|      4       |                  Chunk ID                  |                          "fmt "                           |
+|      4       |                 Chunk Size                 | 16 **(this library does not support extra format bytes)** |
+|      2       |      Audio Format (Compression Code)       |          1 **(this library only supports PCM)**           |
+|      2       |             Number of Channels             |                        1 - 65,535                         |
+|      4       |                Sample Rate                 |                      1 - 0xFFFFFFFF                       |
+|      4       |              Bytes Per Second              |                      1 - 0xFFFFFFFF                       |
+|      2       |                Block Align                 |                        1 - 65,535                         |
+|      2       |        Bits Per Sample (Bit Depth)         |                        2 - 65,535                         |
+|     N/A      |_**Extra Format Bytes are not supported**_  |                            N/A                            |
+
+#### Fact
+
+| Size |           Description           | Value |
+|:----:|:-------------------------------:|:-----:|
+| LIST | Includes support for type INFO. |
+
+#### Cue
+
+| Size |           Description           | Value |
+|:----:|:-------------------------------:|:-----:|
+| LIST | Includes support for type INFO. |
+
+#### Plst
+
+| Size |           Description           | Value |
+|:----:|:-------------------------------:|:-----:|
+| LIST | Includes support for type INFO. |
+
+#### List
+
+| Size |           Description           | Value |
+|:----:|:-------------------------------:|:-----:|
+| LIST | Includes support for type INFO. |
+
+#### Labl
+
+| Size |           Description           | Value |
+|:----:|:-------------------------------:|:-----:|
+| LIST | Includes support for type INFO. |
+
+#### Ltxt
+
+| Size |           Description           | Value |
+|:----:|:-------------------------------:|:-----:|
+| LIST | Includes support for type INFO. |
+
+#### Note
+
+| Size |           Description           | Value |
+|:----:|:-------------------------------:|:-----:|
+| LIST | Includes support for type INFO. |
+
+#### Smpl
+
+| Size |           Description           | Value |
+|:----:|:-------------------------------:|:-----:|
+| LIST | Includes support for type INFO. |
+
+#### Inst
+
+| Size |           Description           | Value |
+|:----:|:-------------------------------:|:-----:|
+| LIST | Includes support for type INFO. |
+
+## Resources
+
+|    Website     |         Description         |                                         Link                                          |
+|:--------------:|:---------------------------:|:-------------------------------------------------------------------------------------:|
+|   musicg-api   |       Wav File Format       |  [Here](https://sites.google.com/site/musicgapi/technical-documents/wav-file-format)  |
+| recordingblogs | List Chunk (of a RIFF file) |         [Here](https://www.recordingblogs.com/wiki/list-chunk-of-a-wave-file)         |
+|   soundfile    |  WAVE PCM soundfile format  |                   [Here](http://soundfile.sapp.org/doc/WaveFormat/)                   |
+
 
 ## License
 
