@@ -192,7 +192,7 @@ for {
 
 ## Expected Chunk Formats
 
-#### [FMT](https://sites.google.com/site/musicgapi/technical-documents/wav-file-format#fmt)
+#### [fmt](https://sites.google.com/site/musicgapi/technical-documents/wav-file-format#fmt)
 
 | Size (bytes) |                Description                 |                           Value                           |
 |:------------:|:------------------------------------------:|:---------------------------------------------------------:|
@@ -206,7 +206,7 @@ for {
 |      2       |        Bits Per Sample (Bit Depth)         |                        2 - 65,535                         |
 |     N/A      |_**Extra Format Bytes are not supported**_  |                            N/A                            |
 
-#### [Fact](https://sites.google.com/site/musicgapi/technical-documents/wav-file-format#fact)
+#### [fact](https://sites.google.com/site/musicgapi/technical-documents/wav-file-format#fact)
 
 | Size (bytes) |    Description    |                                          Value                                          |
 |:------------:|:-----------------:|:---------------------------------------------------------------------------------------:|
@@ -214,7 +214,7 @@ for {
 |      4       |    Chunk Size     |                  4 **(this library only supports number of samples)**                   |
 |      4       | Number of Samples |                                     1 - 0xFFFFFFFF                                      | 
 
-#### [Cue](https://sites.google.com/site/musicgapi/technical-documents/wav-file-format#cue)
+#### [cue](https://sites.google.com/site/musicgapi/technical-documents/wav-file-format#cue)
 
 | Size |       Description        |                           Value                            |
 |:----:|:------------------------:|:----------------------------------------------------------:|
@@ -223,7 +223,7 @@ for {
 |  4   |   Number of Cue Points   |                    number of cue points                    |
 | N/A  |**Cue Points Start Here** |                            N/A                             |
 
-###### Cue Point
+###### cue point
 
 | Size |  Description  |                                        Value                                         |
 |:----:|:-------------:|:------------------------------------------------------------------------------------:|
@@ -234,47 +234,105 @@ for {
 |  4   |  Block Start  |                        Byte Offset to sample of First Channel                        |
 |  4   | Sample Offset |                     Byte Offset to sample byte of First Channel                      |
 
-#### Plst
+#### [plst](https://sites.google.com/site/musicgapi/technical-documents/wav-file-format#plst)
 
-| Size |           Description           | Value |
-|:----:|:-------------------------------:|:-----:|
-| LIST | Includes support for type INFO. |
+| Size |    Description     |                   Value                    |
+|:----:|:------------------:|:------------------------------------------:|
+|  4   |      Chunk ID      | "plst" **(this library case insensitive)** |
+|  4   |     Chunk Size     |          Number of Segments * 12           |
+|  4   | Number of Segments |               1 - 0xFFFFFFFF               | 
 
-#### List
+###### segment
 
-| Size |           Description           | Value |
-|:----:|:-------------------------------:|:-----:|
-| LIST | Includes support for type INFO. |
+| Size |     Description     |     Value      |
+|:----:|:-------------------:|:--------------:|
+|  4   |    Cue Point ID     | 0 - 0xFFFFFFFF |
+|  4   | Length (in samples) | 1 - 0xFFFFFFFF |
+|  4   |  Number of Repeats  | 1 - 0xFFFFFFFF | 
 
-#### Labl
 
-| Size |           Description           | Value |
-|:----:|:-------------------------------:|:-----:|
-| LIST | Includes support for type INFO. |
+#### list
 
-#### Ltxt
+| Size | Description |                        Value                         |
+|:----:|:-----------:|:----------------------------------------------------:|
+|  4   |  Chunk ID   |      "list" **(this library case insensitive)**      |
+|  4   | Chunk Size  |                   depends on type                    |
+|  4   |   Type ID   | "adtl" or "info" **(this library case insensitive)** | 
 
-| Size |           Description           | Value |
-|:----:|:-------------------------------:|:-----:|
-| LIST | Includes support for type INFO. |
+#### [labl](https://sites.google.com/site/musicgapi/technical-documents/wav-file-format#labl)
 
-#### Note
+| Size | Description  |                   Value                    |
+|:----:|:------------:|:------------------------------------------:|
+|  4   |   Chunk ID   | "labl" **(this library case insensitive)** |
+|  4   |  Chunk Size  |              depends on text               |
+|  4   | Cue Point ID |               0 - 0xFFFFFFFF               | 
+| N/A  |     Text     |                    N/A                     |
 
-| Size |           Description           | Value |
-|:----:|:-------------------------------:|:-----:|
-| LIST | Includes support for type INFO. |
+#### [ltxt](https://sites.google.com/site/musicgapi/technical-documents/wav-file-format#ltxt)
 
-#### Smpl
+| Size |  Description  |                   Value                    |
+|:----:|:-------------:|:------------------------------------------:|
+|  4   |   Chunk ID    | "ltxt" **(this library case insensitive)** |
+|  4   |  Chunk Size   |              depends on text               |
+|  4   | Cue Point ID  |               0 - 0xFFFFFFFF               |
+|  4   | Sample Length |               0 - 0xFFFFFFFF               | 
+|  4   |  Purpose ID   |               0 - 0xFFFFFFFF               | 
+|  2   |    Country    |                 0 - 0xFFFF                 |
+|  2   |   Language    |                 0 - 0xFFFF                 | 
+|  2   |    Dialect    |                 0 - 0xFFFF                 | 
+|  2   |   Code Page   |                 0 - 0xFFFF                 | 
+| N/A  |     Text      |                    N/A                     | 
 
-| Size |           Description           | Value |
-|:----:|:-------------------------------:|:-----:|
-| LIST | Includes support for type INFO. |
+#### [note](https://sites.google.com/site/musicgapi/technical-documents/wav-file-format#note)
 
-#### Inst
+| Size | Description  |                   Value                    |
+|:----:|:------------:|:------------------------------------------:|
+|  4   |   Chunk ID   | "note" **(this library case insensitive)** |
+|  4   |  Chunk Size  |              depends on text               |
+|  4   | Cue Point ID |               0 - 0xFFFFFFFF               | 
+| N/A  |     Text     |                    N/A                     |
 
-| Size |           Description           | Value |
-|:----:|:-------------------------------:|:-----:|
-| LIST | Includes support for type INFO. |
+#### [smpl](https://sites.google.com/site/musicgapi/technical-documents/wav-file-format#smpl)
+
+| Size |         Description          |                       Value                       |
+|:----:|:----------------------------:|:-------------------------------------------------:|
+|  4   |           Chunk ID           |    "smpl" **(this library case insensitive)**     |
+|  4   |          Chunk Size          | 36 + (Number of Sample Loops * 24) + Sampler Data |
+|  4   |         Manufacturer         |                  0 - 0xFFFFFFFF                   | 
+|  4   |           Product            |                  0 - 0xFFFFFFFF                   | 
+|  4   |        Sample Period         |                  0 - 0xFFFFFFFF                   | 
+|  4   |       MIDI Unity Note        |                      0 - 127                      | 
+|  4   |     MIDI Pitch Fraction      |                  0 - 0xFFFFFFFF                   | 
+|  4   |         SMPTE Format         |                 0, 24, 25, 29, 30                 | 
+|  4   |         SMPTE Offset         |                  0 - 0xFFFFFFFF                   | 
+|  4   |    Number of Sample Loops    |                  0 - 0xFFFFFFFF                   | 
+|  4   |         Sampler Data         |                  0 - 0xFFFFFFFF                   |
+| N/A  | **Sampler Loops Start Here** |                        N/A                        | 
+
+###### sampler loop
+
+| Size |         Description          |      Value      |
+|:----:|:----------------------------:|:---------------:|
+|  4   |         Cue Point ID         | 0 - 0xFFFFFFFF  |
+|  4   |             Type             | 0 - 0xFFFFFFFF  |
+|  4   |            Start             | 0 - 0xFFFFFFFF  | 
+|  4   |             End              | 0 - 0xFFFFFFFF  | 
+|  4   |           Fraction           | 0 - 0xFFFFFFFF  | 
+|  4   |          Play Count          | 0 - 0xFFFFFFFF  | 
+
+#### [inst](https://sites.google.com/site/musicgapi/technical-documents/wav-file-format#inst)
+
+| Size |  Description   |                                     Value                                      |
+|:----:|:--------------:|:------------------------------------------------------------------------------:|
+|  4   |    Chunk ID    |                   "inst" **(this library case insensitive)**                   |
+|  4   |   Chunk Size   |                                       7                                        |
+|  1   | Unshifted Note |                                    0 - 127                                     |
+|  1   | Fine Tune (dB) |                                   -50 - +50                                    |
+|  1   |      Gain      |                                   -64 - +64                                    |
+|  1   |    Low Note    |                                    0 - 127                                     |
+|  1   |   High Note    |                                    0 - 127                                     |
+|  1   |  Low Velocity  |                                    1 - 127                                     |
+|  1   | High Velocity  |                                    1 - 127                                     |
 
 ## Resources
 
