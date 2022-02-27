@@ -26,8 +26,8 @@ const (
 
 // Decoder is used for reading a wav file
 type Decoder struct {
-	r  io.ReadSeeker
-	WC *wavChunks
+	r        io.ReadSeeker
+	Metadata *wavChunks
 }
 
 // NewDecoder returns a new Decoder for the provided reader
@@ -49,7 +49,7 @@ func recordAndForward(r io.Reader, s int) (*bytes.Reader, error) {
 }
 
 // ReadMetadata reads all the file headers and skips the audio data
-// The header information will be stored in Decoder.WC
+// The header information will be stored in Decoder.Metadata
 func (d *Decoder) ReadMetadata() error {
 	if d == nil {
 		return nil
@@ -75,7 +75,7 @@ func (d *Decoder) ReadMetadata() error {
 		return err
 	}
 
-	d.WC = wc
+	d.Metadata = wc
 
 	// Increase the data position by 12 to make up
 	// for the 12 bytes in the wav header
@@ -83,7 +83,7 @@ func (d *Decoder) ReadMetadata() error {
 	// we create a reader of length 12 when reading the RIFF header
 	// because of that, the next reader (that is used for readWavChunks)
 	// is 12 positions behind the actual file
-	d.WC.DataPosition += 12
+	d.Metadata.DataPosition += 12
 
 	return nil
 }
@@ -103,7 +103,7 @@ func (d *Decoder) ReadAudioData(s int, whence int) ([]int, error) {
 
 	// This should be called after `toDataStart` because
 	// it assumes that the FMT chunk is set on the `Decoder`
-	b, err := readDataChunk(s, d.WC.FMT.BitsPerSample, d.r)
+	b, err := readDataChunk(s, d.Metadata.FMT.BitsPerSample, d.r)
 	if err != nil {
 		if err == io.EOF {
 			return b, err
@@ -115,8 +115,8 @@ func (d *Decoder) ReadAudioData(s int, whence int) ([]int, error) {
 }
 
 func (d *Decoder) toDataStart() error {
-	if d.WC != nil && d.WC.DataPosition != 0 {
-		_, err := d.r.Seek(d.WC.DataPosition, 0)
+	if d.Metadata != nil && d.Metadata.DataPosition != 0 {
+		_, err := d.r.Seek(d.Metadata.DataPosition, 0)
 		if err != nil {
 			return err
 		}
@@ -132,7 +132,7 @@ func (d *Decoder) toDataStart() error {
 		return err
 	}
 
-	_, err = d.r.Seek(d.WC.DataPosition, 0)
+	_, err = d.r.Seek(d.Metadata.DataPosition, 0)
 	if err != nil {
 		return err
 	}

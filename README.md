@@ -16,10 +16,9 @@
 * [Installation](#Installation)
 * [Encoder](#Encoder)
 * [Decoder](#Decoder)
-* [Practical Examples](#Practical-Examples)
+* [More Examples](#Practical-Examples)
 * [Expected Chunk Formats](#Expected-Chunk-Formats)
 * [Resources](#Resources)
-* [Contributing](#Contributing)
 * [License](#License)
 
 ## Summary
@@ -189,6 +188,10 @@ for {
     a = append(a, ad...)
 }
 ```
+
+## More Examples
+
+More examples can be found in [./cmd](https://github.com/nvisal1/Go-Wav-Codec/tree/master/cmd)
 
 ## Expected Chunk Formats
 

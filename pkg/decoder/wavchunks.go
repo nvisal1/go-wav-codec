@@ -19,6 +19,7 @@ type wavChunks struct {
 	Sample       *smplChunk
 	DataPosition int64
 	DataLength   uint32
+	NumSamples   uint32
 }
 
 func readWavChunks(r *bytes.Reader) (*wavChunks, error) {
@@ -217,6 +218,7 @@ func handleDATAChunk(r *bytes.Reader, c *chunk, wc *wavChunks) error {
 
 	wc.DataPosition = p
 	wc.DataLength = c.Size
+	wc.NumSamples = uint32(int(wc.DataLength) / int(calculateBytesPerSample(wc.FMT.BitsPerSample)))
 	_, err = r.Seek(int64(c.Size), 1)
 	if err != nil {
 		return err

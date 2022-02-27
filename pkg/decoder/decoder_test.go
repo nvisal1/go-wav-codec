@@ -17,32 +17,32 @@ func TestDecoder_ReadMetadata_ReadAudioData(t *testing.T) {
 		t.Error(err.Error())
 	}
 
-	if d.WC.FMT == nil {
+	if d.Metadata.FMT == nil {
 		t.Error("fmt chunk is nil")
 	}
 
-	if d.WC.FMT.AudioFormat != 1 {
-		t.Errorf("expected audio format \"1\". received audio format \"%d\"", d.WC.FMT.AudioFormat)
+	if d.Metadata.FMT.AudioFormat != 1 {
+		t.Errorf("expected audio format \"1\". received audio format \"%d\"", d.Metadata.FMT.AudioFormat)
 	}
 
-	if d.WC.FMT.NumChannels != 2 {
-		t.Errorf("expected num channels \"2\". received num channels \"%d\"", d.WC.FMT.NumChannels)
+	if d.Metadata.FMT.NumChannels != 2 {
+		t.Errorf("expected num channels \"2\". received num channels \"%d\"", d.Metadata.FMT.NumChannels)
 	}
 
-	if d.WC.FMT.SampleRate != 48000 {
-		t.Errorf("expected sample rate \"48000\". received sample rate \"%d\"", d.WC.FMT.SampleRate)
+	if d.Metadata.FMT.SampleRate != 48000 {
+		t.Errorf("expected sample rate \"48000\". received sample rate \"%d\"", d.Metadata.FMT.SampleRate)
 	}
 
-	if d.WC.FMT.ByteRate != 192000 {
-		t.Errorf("expected byte rate \"192000\". received byte rate \"%d\"", d.WC.FMT.ByteRate)
+	if d.Metadata.FMT.ByteRate != 192000 {
+		t.Errorf("expected byte rate \"192000\". received byte rate \"%d\"", d.Metadata.FMT.ByteRate)
 	}
 
-	if d.WC.FMT.BlockAlign != 4 {
-		t.Errorf("expected block align \"4\". received block align \"%d\"", d.WC.FMT.BlockAlign)
+	if d.Metadata.FMT.BlockAlign != 4 {
+		t.Errorf("expected block align \"4\". received block align \"%d\"", d.Metadata.FMT.BlockAlign)
 	}
 
-	if d.WC.FMT.BitsPerSample != 16 {
-		t.Errorf("expected bits per sample \"16\". received bits per sample \"%d\"", d.WC.FMT.BitsPerSample)
+	if d.Metadata.FMT.BitsPerSample != 16 {
+		t.Errorf("expected bits per sample \"16\". received bits per sample \"%d\"", d.Metadata.FMT.BitsPerSample)
 	}
 
 	b, err := d.ReadAudioData(100, 0)
@@ -60,8 +60,8 @@ func TestDecoder_ReadMetadata_ReadAudioData(t *testing.T) {
 	}
 
 	// 100 * 2 == 100 samples * 2 bytes per sample
-	if p != (d.WC.DataPosition + (100 * 2)) {
-		t.Errorf("expected reader to be at position \"%d\". but reader is actually at position \"%d\"", d.WC.DataPosition+(100*2), p)
+	if p != (d.Metadata.DataPosition + (100 * 2)) {
+		t.Errorf("expected reader to be at position \"%d\". but reader is actually at position \"%d\"", d.Metadata.DataPosition+(100*2), p)
 	}
 
 }
@@ -88,7 +88,7 @@ func TestDecoder_ReadAudioData(t *testing.T) {
 	}
 
 	// 100 * 2 == 100 samples * 2 bytes per sample
-	if p != (d.WC.DataPosition + (100 * 2)) {
-		t.Errorf("expected reader to be at position \"%d\". but reader is actually at position \"%d\"", d.WC.DataPosition+(100*2), p)
+	if p != (d.Metadata.DataPosition + (100 * 2)) {
+		t.Errorf("expected reader to be at position \"%d\". but reader is actually at position \"%d\"", d.Metadata.DataPosition+(100*2), p)
 	}
 }

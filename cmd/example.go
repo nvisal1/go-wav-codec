@@ -2,51 +2,71 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"os"
-	wav "wav-concat/pkg"
+	"wav-concat/pkg/decoder"
+	"wav-concat/pkg/encoder"
 )
 
-/**
-Library functions
-1. Concat two wav files --
-2. Store all wav headers in memory
-3. Optional pull all data into memory
-4. Easily iterate over pcm data - and allow user to specify batch size
-5. Mix two wav files together - overlap them
-6. Do the best we can to update headers when they do not match
-7. Allow for multiple files to concat and mix
-
-Wav file specification
-http://soundfile.sapp.org/doc/WaveFormat/
-*/
-
+// This example will copy all the audio data from one wav file
+// and write it to a new wav file
 func main() {
-	path1 := "./recording-1.wav"
-	//path2 := "./recording-2.wav"
+	p := "./assets/recording-1.wav"
+	f, err := os.Open(p)
+	if err != nil {
+		panic(err)
+	}
 
-	//w1, w2, w3, err := wav.Concat(path1, path2)
-	//if err != nil {
-	//	panic(err)
-	//}
-	//
-	//fmt.Println(w1.Subchunk2Size)
-	//fmt.Println(w2.Subchunk2Size)
-	//fmt.Println(w3.Subchunk2Size)
-	//
-	//fmt.Println(len(w1.Data))
-	//fmt.Println(len(w2.Data))
-	//fmt.Println(len(w3.Data))
-	//
-	//err = w3.WriteTo("./recording-3.wav")
-	//if err != nil {
-	//	panic(err)
-	//}
+	d := decoder.NewDecoder(f)
 
-	f, _ := os.Open(path1)
-	w := wav.NewWavReader(f)
-	w1, _ := w.ReadHeaders()
-	fmt.Println("====")
-	fmt.Println(w1.BitsPerSample)
-	fmt.Println(w1.AudioFormat)
-	fmt.Println(w1.FileFormat)
+	err = d.ReadMetadata()
+	if err != nil {
+		panic(err)
+	}
+
+	numSamples := d.Metadata.NumSamples
+
+	chunkSize := int(numSamples / 10)
+
+	buf := make([]int, 0)
+
+	b, err := d.ReadAudioData(chunkSize, 0)
+	if err != nil {
+		panic(err)
+	}
+
+	buf = append(buf, b...)
+
+	for {
+		fmt.Println("Reading another chunk...")
+		b, err = d.ReadAudioData(chunkSize, 1)
+		if err != nil {
+			if err == io.EOF {
+				break
+			}
+			panic(err)
+		}
+		buf = append(buf, b...)
+	}
+
+	f.Close()
+
+	f2, err := os.Create("./assets/a-new-file.wav")
+	e, err := encoder.NewEncoder(1, d.Metadata.FMT.NumChannels, d.Metadata.FMT.SampleRate, d.Metadata.FMT.BitsPerSample, f2)
+	if err != nil {
+		panic(err)
+	}
+
+	err = e.WriteAudioData(buf, 0)
+	if err != nil {
+		panic(err)
+	}
+
+	err = e.Close()
+	if err != nil {
+		panic(err)
+	}
+
+	f2.Close()
+
 }
