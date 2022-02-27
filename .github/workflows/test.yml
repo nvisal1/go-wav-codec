@@ -1,4 +1,4 @@
-name: Go Wav Codec
+name: Test
 
 on:
   push:
