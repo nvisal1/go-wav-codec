@@ -62,12 +62,6 @@ import "github.com/nvisal1/go-wav-codec"
 
 ## Encoder
 
-`WriteMetadata`
-
-`WriteAudioData`
-
-`Close`
-
 ### Examples
 
 #### Create a new Encoder
@@ -139,10 +133,6 @@ if err != nil {
 
 
 ## Decoder
-
-`ReadMetadata`
-
-`ReadAudioData`
 
 ### Examples
 
