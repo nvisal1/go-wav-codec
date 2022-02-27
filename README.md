@@ -16,7 +16,7 @@
 * [Installation](#Installation)
 * [Encoder](#Encoder)
 * [Decoder](#Decoder)
-* [More Examples](#Practical-Examples)
+* [More Examples](#More-Examples)
 * [Expected Chunk Formats](#Expected-Chunk-Formats)
 * [Resources](#Resources)
 * [License](#License)
