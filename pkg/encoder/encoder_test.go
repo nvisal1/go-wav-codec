@@ -1,10 +1,11 @@
 package encoder
 
 import (
-	"github.com/nvisal1/go-wav-codec/pkg/decoder"
 	"io"
 	"os"
 	"testing"
+
+	"github.com/nvisal1/go-wav-codec/pkg/decoder"
 )
 
 func TestEncoder_WriteAudioData_Close(t *testing.T) {
@@ -59,6 +60,8 @@ func TestEncoder_WriteAudioData_Close(t *testing.T) {
 	}
 
 }
+
+GOPROXY=proxy.golang.org go list -m github.com/nvisal1/go-wav-codec@v0.1.0
 
 func TestEncoder_WriteMetadata_WriteAudioData_Close(t *testing.T) {
 	f, err := os.Create("./TestEncoder_WriteAudioData_Close-2.wav")

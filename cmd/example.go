@@ -2,10 +2,10 @@ package main
 
 import (
 	"fmt"
+	"github.com/nvisal1/go-wav-codec/pkg/decoder"
+	"github.com/nvisal1/go-wav-codec/pkg/encoder"
 	"io"
 	"os"
-	"wav-concat/pkg/decoder"
-	"wav-concat/pkg/encoder"
 )
 
 // This example will copy all the audio data from one wav file
