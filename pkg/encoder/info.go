@@ -175,18 +175,6 @@ func writeInfoChunk(w io.Writer, i *InfoChunk) (int, error) {
 	}
 
 	if i.Comments != "" {
-		b := align(bytesFromString(i.Comments))
-		if err := binary.Write(w, binary.BigEndian, align(bytesFromString(iCMT))); err != nil {
-			return bytesWritten, err
-		}
-		if err := binary.Write(w, binary.LittleEndian, bytesFromUINT32(uint32(len(b)))); err != nil {
-			return bytesWritten, err
-		}
-		if err := binary.Write(w, binary.BigEndian, &b); err != nil {
-			return bytesWritten, err
-		}
-		bytesWritten += len(b)
-
 		n, err := writeInfoPart(w, iCMT, i.Comments)
 		if err != nil {
 			return bytesWritten, err
