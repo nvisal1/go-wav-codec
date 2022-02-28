@@ -73,43 +73,43 @@ func readINFOChunk(r *bytes.Reader) (*infoChunk, error) {
 
 		c.ID = strings.ToUpper(c.ID)
 
-		scratch := make([]byte, c.Size)
+		v := make([]byte, c.Size)
 
-		if err = binary.Read(r, binary.BigEndian, &scratch); err != nil {
+		if err = binary.Read(r, binary.BigEndian, &v); err != nil {
 			return nil, err
 		}
 
 		switch c.ID {
 		case iARL:
-			i.Location = removeNullCharacters(string(scratch[:]))
+			i.Location = removeNullCharacters(string(v[:]))
 		case iART:
-			i.Artist = removeNullCharacters(string(scratch[:]))
+			i.Artist = removeNullCharacters(string(v[:]))
 		case iSFT:
-			i.Software = removeNullCharacters(string(scratch[:]))
+			i.Software = removeNullCharacters(string(v[:]))
 		case iCRD:
-			i.CreationDate = removeNullCharacters(string(scratch[:]))
+			i.CreationDate = removeNullCharacters(string(v[:]))
 		case iCOP:
-			i.Copyright = removeNullCharacters(string(scratch[:]))
+			i.Copyright = removeNullCharacters(string(v[:]))
 		case iNAM:
-			i.Title = removeNullCharacters(string(scratch[:]))
+			i.Title = removeNullCharacters(string(v[:]))
 		case iENG:
-			i.Engineer = removeNullCharacters(string(scratch[:]))
+			i.Engineer = removeNullCharacters(string(v[:]))
 		case iGNR:
-			i.Genre = removeNullCharacters(string(scratch[:]))
+			i.Genre = removeNullCharacters(string(v[:]))
 		case iPRD:
-			i.Product = removeNullCharacters(string(scratch[:]))
+			i.Product = removeNullCharacters(string(v[:]))
 		case iSRC:
-			i.Source = removeNullCharacters(string(scratch[:]))
+			i.Source = removeNullCharacters(string(v[:]))
 		case iSBJ:
-			i.Subject = removeNullCharacters(string(scratch[:]))
+			i.Subject = removeNullCharacters(string(v[:]))
 		case iCMT:
-			i.Comments = removeNullCharacters(string(scratch[:]))
+			i.Comments = removeNullCharacters(string(v[:]))
 		case iTCH:
-			i.Technician = removeNullCharacters(string(scratch[:]))
+			i.Technician = removeNullCharacters(string(v[:]))
 		case iKEY:
-			i.Keywords = removeNullCharacters(string(scratch[:]))
+			i.Keywords = removeNullCharacters(string(v[:]))
 		case iMED:
-			i.Medium = removeNullCharacters(string(scratch[:]))
+			i.Medium = removeNullCharacters(string(v[:]))
 		}
 	}
 }

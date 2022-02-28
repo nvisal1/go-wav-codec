@@ -50,6 +50,32 @@ type InfoChunk struct {
 	Medium       string
 }
 
+func writeInfoPart(w io.Writer, t string, v string) (int, error) {
+	bytesWritten := 0
+	l := len(bytesFromString(v))
+	ba := align(bytesFromString(v))
+
+	// Write the chunk ID
+	if err := binary.Write(w, binary.BigEndian, align(bytesFromString(t))); err != nil {
+		return bytesWritten, err
+	}
+
+	bytesWritten += len(bytesFromString(t))
+
+	// Write the chunk size
+	if err := binary.Write(w, binary.LittleEndian, uint32(len(ba))); err != nil {
+		return bytesWritten, err
+	}
+	bytesWritten += len(ba)
+
+	// Write the chunk data
+	if err := binary.Write(w, binary.BigEndian, &ba); err != nil {
+		return bytesWritten, err
+	}
+	bytesWritten += l
+	return bytesWritten, nil
+}
+
 func writeInfoChunk(w io.Writer, i *InfoChunk) (int, error) {
 	bytesWritten := 0
 
@@ -61,160 +87,91 @@ func writeInfoChunk(w io.Writer, i *InfoChunk) (int, error) {
 	bytesWritten += len(b)
 
 	if i.Location != "" {
-		b := align(bytesFromString(i.Location))
-		if err := binary.Write(w, binary.BigEndian, align(bytesFromString(iARL))); err != nil {
+		n, err := writeInfoPart(w, iARL, i.Location)
+		if err != nil {
 			return bytesWritten, err
 		}
-		if err := binary.Write(w, binary.LittleEndian, bytesFromUINT32(uint32(len(b)))); err != nil {
-			return bytesWritten, err
-		}
-		if err := binary.Write(w, binary.BigEndian, &b); err != nil {
-			return bytesWritten, err
-		}
-		bytesWritten += len(b)
+		bytesWritten += n
 	}
 
 	if i.Artist != "" {
-		l := len(bytesFromString(i.Artist))
-		ba := align(bytesFromString(i.Artist))
-		if err := binary.Write(w, binary.BigEndian, align(bytesFromString(iART))); err != nil {
+		n, err := writeInfoPart(w, iART, i.Artist)
+		if err != nil {
 			return bytesWritten, err
 		}
-		bytesWritten += len(bytesFromString(iART))
-		if err := binary.Write(w, binary.LittleEndian, uint32(len(ba))); err != nil {
-			return bytesWritten, err
-		}
-		bytesWritten += len(ba)
-		if err := binary.Write(w, binary.BigEndian, &ba); err != nil {
-			return bytesWritten, err
-		}
-		bytesWritten += l
+		bytesWritten += n
 	}
 
 	if i.Software != "" {
-		b := align(bytesFromString(i.Software))
-		if err := binary.Write(w, binary.BigEndian, align(bytesFromString(iSFT))); err != nil {
+		n, err := writeInfoPart(w, iSFT, i.Software)
+		if err != nil {
 			return bytesWritten, err
 		}
-		if err := binary.Write(w, binary.LittleEndian, bytesFromUINT32(uint32(len(b)))); err != nil {
-			return bytesWritten, err
-		}
-		if err := binary.Write(w, binary.BigEndian, &b); err != nil {
-			return bytesWritten, err
-		}
-		bytesWritten += len(b)
+		bytesWritten += n
 	}
 
 	if i.CreationDate != "" {
-		b := align(bytesFromString(i.CreationDate))
-		if err := binary.Write(w, binary.BigEndian, align(bytesFromString(iCRD))); err != nil {
+		n, err := writeInfoPart(w, iCRD, i.CreationDate)
+		if err != nil {
 			return bytesWritten, err
 		}
-		if err := binary.Write(w, binary.LittleEndian, bytesFromUINT32(uint32(len(b)))); err != nil {
-			return bytesWritten, err
-		}
-		if err := binary.Write(w, binary.BigEndian, &b); err != nil {
-			return bytesWritten, err
-		}
-		bytesWritten += len(b)
+		bytesWritten += n
 	}
 
 	if i.Copyright != "" {
-		b := align(bytesFromString(i.Copyright))
-		if err := binary.Write(w, binary.BigEndian, align(bytesFromString(iCOP))); err != nil {
+		n, err := writeInfoPart(w, iCOP, i.Copyright)
+		if err != nil {
 			return bytesWritten, err
 		}
-		if err := binary.Write(w, binary.LittleEndian, bytesFromUINT32(uint32(len(b)))); err != nil {
-			return bytesWritten, err
-		}
-		if err := binary.Write(w, binary.BigEndian, &b); err != nil {
-			return bytesWritten, err
-		}
-		bytesWritten += len(b)
+		bytesWritten += n
 	}
 
 	if i.Title != "" {
-		b := align(bytesFromString(i.Title))
-		if err := binary.Write(w, binary.BigEndian, align(bytesFromString(iNAM))); err != nil {
+		n, err := writeInfoPart(w, iNAM, i.Title)
+		if err != nil {
 			return bytesWritten, err
 		}
-		if err := binary.Write(w, binary.LittleEndian, bytesFromUINT32(uint32(len(b)))); err != nil {
-			return bytesWritten, err
-		}
-		if err := binary.Write(w, binary.BigEndian, &b); err != nil {
-			return bytesWritten, err
-		}
-		bytesWritten += len(b)
+		bytesWritten += n
 	}
 
 	if i.Engineer != "" {
-		b := align(bytesFromString(i.Engineer))
-		if err := binary.Write(w, binary.BigEndian, align(bytesFromString(iENG))); err != nil {
+		n, err := writeInfoPart(w, iENG, i.Engineer)
+		if err != nil {
 			return bytesWritten, err
 		}
-		if err := binary.Write(w, binary.LittleEndian, bytesFromUINT32(uint32(len(b)))); err != nil {
-			return bytesWritten, err
-		}
-		if err := binary.Write(w, binary.BigEndian, &b); err != nil {
-			return bytesWritten, err
-		}
-		bytesWritten += len(b)
+		bytesWritten += n
 	}
 
 	if i.Genre != "" {
-		b := align(bytesFromString(i.Genre))
-		if err := binary.Write(w, binary.BigEndian, align(bytesFromString(iGNR))); err != nil {
+		n, err := writeInfoPart(w, iGNR, i.Genre)
+		if err != nil {
 			return bytesWritten, err
 		}
-		if err := binary.Write(w, binary.LittleEndian, bytesFromUINT32(uint32(len(b)))); err != nil {
-			return bytesWritten, err
-		}
-		if err := binary.Write(w, binary.BigEndian, &b); err != nil {
-			return bytesWritten, err
-		}
-		bytesWritten += len(b)
+		bytesWritten += n
 	}
 
 	if i.Product != "" {
-		b := align(bytesFromString(i.Product))
-		if err := binary.Write(w, binary.BigEndian, align(bytesFromString(iPRD))); err != nil {
+		n, err := writeInfoPart(w, iPRD, i.Product)
+		if err != nil {
 			return bytesWritten, err
 		}
-		if err := binary.Write(w, binary.LittleEndian, bytesFromUINT32(uint32(len(b)))); err != nil {
-			return bytesWritten, err
-		}
-		if err := binary.Write(w, binary.BigEndian, &b); err != nil {
-			return bytesWritten, err
-		}
-		bytesWritten += len(b)
+		bytesWritten += n
 	}
 
 	if i.Source != "" {
-		b := align(bytesFromString(i.Source))
-		if err := binary.Write(w, binary.BigEndian, align(bytesFromString(iSRC))); err != nil {
+		n, err := writeInfoPart(w, iSRC, i.Source)
+		if err != nil {
 			return bytesWritten, err
 		}
-		if err := binary.Write(w, binary.LittleEndian, bytesFromUINT32(uint32(len(b)))); err != nil {
-			return bytesWritten, err
-		}
-		if err := binary.Write(w, binary.BigEndian, &b); err != nil {
-			return bytesWritten, err
-		}
-		bytesWritten += len(b)
+		bytesWritten += n
 	}
 
 	if i.Subject != "" {
-		b := align(bytesFromString(i.Subject))
-		if err := binary.Write(w, binary.BigEndian, align(bytesFromString(iSBJ))); err != nil {
+		n, err := writeInfoPart(w, iSBJ, i.Subject)
+		if err != nil {
 			return bytesWritten, err
 		}
-		if err := binary.Write(w, binary.LittleEndian, bytesFromUINT32(uint32(len(b)))); err != nil {
-			return bytesWritten, err
-		}
-		if err := binary.Write(w, binary.BigEndian, &b); err != nil {
-			return bytesWritten, err
-		}
-		bytesWritten += len(b)
+		bytesWritten += n
 	}
 
 	if i.Comments != "" {
@@ -229,48 +186,36 @@ func writeInfoChunk(w io.Writer, i *InfoChunk) (int, error) {
 			return bytesWritten, err
 		}
 		bytesWritten += len(b)
+
+		n, err := writeInfoPart(w, iCMT, i.Comments)
+		if err != nil {
+			return bytesWritten, err
+		}
+		bytesWritten += n
 	}
 
 	if i.Technician != "" {
-		b := align(bytesFromString(i.Technician))
-		if err := binary.Write(w, binary.BigEndian, align(bytesFromString(iTCH))); err != nil {
+		n, err := writeInfoPart(w, iTCH, i.Technician)
+		if err != nil {
 			return bytesWritten, err
 		}
-		if err := binary.Write(w, binary.LittleEndian, bytesFromUINT32(uint32(len(b)))); err != nil {
-			return bytesWritten, err
-		}
-		if err := binary.Write(w, binary.BigEndian, &b); err != nil {
-			return bytesWritten, err
-		}
-		bytesWritten += len(b)
+		bytesWritten += n
 	}
 
 	if i.Keywords != "" {
-		b := align(bytesFromString(i.Keywords))
-		if err := binary.Write(w, binary.BigEndian, align(bytesFromString(iKEY))); err != nil {
+		n, err := writeInfoPart(w, iKEY, i.Keywords)
+		if err != nil {
 			return bytesWritten, err
 		}
-		if err := binary.Write(w, binary.LittleEndian, bytesFromUINT32(uint32(len(b)))); err != nil {
-			return bytesWritten, err
-		}
-		if err := binary.Write(w, binary.BigEndian, &b); err != nil {
-			return bytesWritten, err
-		}
-		bytesWritten += len(b)
+		bytesWritten += n
 	}
 
 	if i.Medium != "" {
-		b := align(bytesFromString(i.Medium))
-		if err := binary.Write(w, binary.BigEndian, align(bytesFromString(iMED))); err != nil {
+		n, err := writeInfoPart(w, iMED, i.Medium)
+		if err != nil {
 			return bytesWritten, err
 		}
-		if err := binary.Write(w, binary.LittleEndian, bytesFromUINT32(uint32(len(b)))); err != nil {
-			return bytesWritten, err
-		}
-		if err := binary.Write(w, binary.BigEndian, &b); err != nil {
-			return bytesWritten, err
-		}
-		bytesWritten += len(b)
+		bytesWritten += n
 	}
 
 	return bytesWritten, nil
