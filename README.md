@@ -23,44 +23,36 @@
 
 ## Summary
 
-This audio codec includes a simple API that makes it easy to read and write WAV files in Go!
+`Waveform Audio File Format`, commonly shortened to `WAV`, is an uncompressed audio format.
+`WAV` files are usually quite large since they are uncompressed.
 
-It includes support for **reading** WAV files that include
-
-
-| Chunk ID |                                                                                                                                            Description                                                                                                                                             |
-|:--------:|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
-|   LIST   | Includes support for types ADTL and INFO. ADTL chunks can include <br/> LTXT, LABL and NOTE chunks<br/>Learn about [INFO](https://www.recordingblogs.com/wiki/list-chunk-of-a-wave-file) <br/>Learn about [ADTL](https://sites.google.com/site/musicgapi/technical-documents/wav-file-format#list) |
-|   SMPL   |                                                                                                                                                301                                                                                                                                                 |
-|   FACT   |                                                                                                                                                301                                                                                                                                                 |
-|   PLST   |                                                                                                                                                301                                                                                                                                                 |
-|   CUE    |                                                                                                                                                301                                                                                                                                                 |
-|   INST   |                                                                                                                                                301                                                                                                                                                 |
-
-
-and support for **writing** Wav files with
-
-| Chunk ID |           Description           |
-|:--------:|:-------------------------------:|
-|   LIST   | Includes support for type INFO. |
-
-
-_**(as most metadata chunks are frowned upon - they are not supported by many applications)**_
+This library includes an API that makes it easy to read and write WAV files in Go!
 
 ## Installation
 
-Using the go wav codec is easy. First, use go get to install the latest version of the library. 
+Using the `go wav codec` is easy. First, use `go get` to install the latest version of the library. 
 
 ```bash
 go get github.com/nvisal1/go-wav-codec
 ```
 
-Next, include go-wav-codec in your application
+Next, include `go wav codec` in your application
 ```go
 import "github.com/nvisal1/go-wav-codec"
 ```
 
 ## Encoder
+
+The `Encoder` supports **writing** metadata and audio data to `WAV` files.
+This library includes support for writing the following metadata chunks
+
+| Chunk ID |                  Description                  |
+|:--------:|:---------------------------------------------:|
+|   LIST   | Includes support for type INFO. [docs](#list) |
+
+
+_**(as most metadata chunks are frowned upon - they are not widely supported by applications)**_
+
 
 ### Examples
 
@@ -133,6 +125,18 @@ if err != nil {
 
 
 ## Decoder
+
+The `Decoder` includes support for **reading** metadata and audio data from `WAV` files. 
+This library supports the following metadata chunks
+
+| Chunk ID |                       Description                       |
+|:--------:|:-------------------------------------------------------:|
+|   LIST   | Includes support for ADTL and INFO types. [docs](#list) |
+|   SMPL   |                      [docs](#smpl)                      |
+|   FACT   |                      [docs](#fact)                      |
+|   PLST   |                      [docs](#plst)                      |
+|   CUE    |                      [docs](#cue)                       |
+|   INST   |                      [docs](#inst)                      |
 
 ### Examples
 
