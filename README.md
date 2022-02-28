@@ -6,6 +6,7 @@ Latest: _v0.1.0_
 [![made-with-Go](https://img.shields.io/badge/Made%20with-Go-1f425f.svg)](http://golang.org)
 [![GitHub go.mod Go version of a Go module](https://img.shields.io/github/go-mod/go-version/gomods/athens.svg)]()
 [![Go Reference](https://pkg.go.dev/badge/github.com/nvisal1/go-wav-codec.svg)](https://pkg.go.dev/github.com/nvisal1/go-wav-codec)
+[![Go Report Card](https://goreportcard.com/badge/github.com/nvisal1/go-wav-codec)](https://goreportcard.com/report/github.com/nvisal1/go-wav-codec)
 [![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)]()
 [![Maintained?](https://img.shields.io/badge/Maintained%3F-yes-green.svg)]()
 [![Open Source? Yes!](https://badgen.net/badge/Open%20Source%20%3F/Yes%21/blue?icon=github)]()
