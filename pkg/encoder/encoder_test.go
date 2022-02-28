@@ -1,10 +1,10 @@
 package encoder
 
 import (
+	"github.com/nvisal1/go-wav-codec/pkg/decoder"
 	"io"
 	"os"
 	"testing"
-	"wav-concat/pkg/decoder"
 )
 
 func TestEncoder_WriteAudioData_Close(t *testing.T) {

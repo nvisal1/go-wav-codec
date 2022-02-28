@@ -1,4 +1,5 @@
 # Go WAV Codec
+Latest: _v0.1.0_
 
 [![Test](https://github.com/nvisal1/Go-Wav-Codec/actions/workflows/test.yml/badge.svg?branch=master)](https://github.com/nvisal1/Go-Wav-Codec/actions/workflows/test.yml)
 [![codecov](https://codecov.io/gh/nvisal1/Go-Wav-Codec/branch/master/graph/badge.svg?token=4DRC08BB3G)](https://codecov.io/gh/nvisal1/Go-Wav-Codec)
